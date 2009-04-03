@@ -5,8 +5,8 @@
 
 == DESCRIPTION:
 
-BreakVerter is able to convert a string encoded in unix, windows or mac format
-to any of these formats.
+BreakVerter is Ruby library and commandline tool for conversion between
+linebreak encoding formats of unix, windows or mac.
 
 == FEATURES/PROBLEMS:
 
@@ -14,15 +14,27 @@ to any of these formats.
 * Tested and fully working on:
   * Windows XP i386 (Ruby 1.8.6)
   * Ubuntu Linux 8.10 i386_64 (Ruby 1.8.7 and 1.9.1p0)
-* The commandline tool doesn't work with Ruby 1.9.x because the user-choices gem is not yet updated. A patch is available here: https://rubyforge.org/tracker/index.php?func=detail&aid=24307&group_id=4192&atid=16176
+* The commandline tool doesn't work with Ruby 1.9.x because the user-choices gem
+  is not yet updated. A patch is available here:
+  https://rubyforge.org/tracker/index.php?func=detail&aid=24307&group_id=4192&atid=16176
 
 == SYNOPSIS:
 
 === Commandline
 
+The default output encoding is unix. You can also choose mac and windows.
+
   breakverter -o windows unix.txt windows.txt
 
-The default output encoding is unix. You can set the default with the environment variable BREAKVERTER_OUTPUT. If no target file is specified the output will be sent to STDOUT.
+If no target file is specified the output will be sent to STDOUT.
+
+  breakverter -o windows mac.txt > windows.txt
+
+You can set the default with the environment variable BREAKVERTER_OUTPUT.
+
+  export BREAKVERTER_OUTPUT=mac
+
+  breakverter windows.txt mac.txt
 
 === Library
 
@@ -30,9 +42,9 @@ First of all you have to load the BreakVerter gem:
 
   require 'breakverter'
 
-You can put strings or objects including a to_s method into the convert method
-and optionally define a target linebreak encoding. The default encoding is
-:unix. You can also choose :windows and :mac. Notice that the :mac encoding is
+You can put strings or objects responding to to_s into the convert method and
+optionally define a target linebreak encoding. The default encoding is :unix.
+You can also choose :mac and :windows. Notice that the :mac encoding is
 deprecated. Modern Apple machines also use :unix linebreak encoding.
 
   windows_string = "Abcdef\r\nAbcdef\r\nAbcdef"
