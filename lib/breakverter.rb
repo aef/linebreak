@@ -17,7 +17,7 @@
 
 # Module containing a single method
 module BreakVerter
-  VERSION = '1.1.1'
+  VERSION = '1.1.2'
   
   BREAKS = {
     :unix => "\n",
