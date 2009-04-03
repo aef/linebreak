@@ -1,0 +1,34 @@
+=== 1.1.1 / 2009-03-08
+
+* minor enhancement
+
+  * Added a --version command to output version and licensing information
+  * Some test refactoring
+  * Some more comments
+
+=== 1.1.0 / 2009-03-01
+
+* 2 major enhancements
+
+  * Added automated tests for the commandline tool
+  * Tested compatibility with ruby 1.9.1
+
+* 1 minor enhancement
+
+  * Added support for custom string linebreak encodings in library
+
+=== 1.0.1 / 2009-02-24
+
+* 1 minor enhancement
+
+  * Now tested on Windows XP
+
+* 1 minor bugfix
+
+  * Bugfixes for commandline use
+
+=== 1.0.0 / 2009-02-24
+
+* 1 major enhancement
+
+  * Birthday!
