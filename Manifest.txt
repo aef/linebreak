@@ -5,6 +5,7 @@ COPYING.txt
 Rakefile
 bin/breakverter
 lib/breakverter.rb
+lib/breakverter/breakverter.rb
 spec/breakverter_spec.rb
 spec/fixtures/unix.txt
 spec/fixtures/windows.txt

@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Module containing a single method
-module BreakVerter
+module Aef::BreakVerter
   VERSION = '1.1.2'
   
   BREAKS = {

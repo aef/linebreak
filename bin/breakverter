@@ -36,7 +36,7 @@ rescue LoadError
 end
 
 # Application class for commandline interface
-class BreakVerter::Application < UserChoices::Command
+class Aef::BreakVerter::Application < UserChoices::Command
   include UserChoices
 
   # Prepare configuration sources
@@ -55,10 +55,10 @@ class BreakVerter::Application < UserChoices::Command
 
   # Define configuration options
   def add_choices(builder)
-    output_values = BreakVerter::BREAKS.keys.map{|key| key.to_s}
+    output_values = Aef::BreakVerter::BREAKS.keys.map{|key| key.to_s}
     builder.add_choice(:output, :default => 'unix', :type => output_values) do |cli|
       cli.uses_option('-o', '--output PLATFORM',
-        "Output formatting. Possible settings: #{BreakVerter::BREAKS.keys.join(', ')}")
+        "Output formatting. Possible settings: #{Aef::BreakVerter::BREAKS.keys.join(', ')}")
     end
 
     builder.add_choice(:version, :default => false, :type => :boolean) do |cli|
@@ -78,7 +78,7 @@ class BreakVerter::Application < UserChoices::Command
 
   # Version and licensing information output
   def version
-    klass = BreakVerter
+    klass = Aef::BreakVerter
     puts "#{klass.name} #{klass::VERSION}"
     puts
     puts 'Project: https://rubyforge.org/projects/aef/'
@@ -104,7 +104,7 @@ class BreakVerter::Application < UserChoices::Command
       warn "Input file access denied (#{@user_choices[:input_filename]})"; exit false
     end
     
-    result = BreakVerter.convert(File.read(@user_choices[:input_filename]), @user_choices[:output].to_sym)
+    result = Aef::BreakVerter.convert(File.read(@user_choices[:input_filename]), @user_choices[:output].to_sym)
 
     if @user_choices[:output_filename] == '-'
       puts result
@@ -120,4 +120,4 @@ class BreakVerter::Application < UserChoices::Command
   end
 end
 
-S4tUtils.with_pleasant_exceptions {BreakVerter::Application.new.execute}
+S4tUtils.with_pleasant_exceptions {Aef::BreakVerter::Application.new.execute}

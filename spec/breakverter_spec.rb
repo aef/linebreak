@@ -57,44 +57,44 @@ module BreakVerterSpecHelper
   end
 end
 
-describe BreakVerter do
+describe Aef::BreakVerter do
   include BreakVerterSpecHelper
 
   context 'library' do
     it 'should convert correctly from unix to windows format' do
-      BreakVerter.convert(unix_fixture, :windows).should eql(windows_fixture)
+      Aef::BreakVerter.convert(unix_fixture, :windows).should eql(windows_fixture)
     end
 
     it 'should convert correctly from unix to mac format' do
-      BreakVerter.convert(unix_fixture, :mac).should eql(mac_fixture)
+      Aef::BreakVerter.convert(unix_fixture, :mac).should eql(mac_fixture)
     end
 
     it 'should convert correctly from unix to a custom format' do
-      BreakVerter.convert(unix_fixture, 'fnord').should eql(custom_fixture)
+      Aef::BreakVerter.convert(unix_fixture, 'fnord').should eql(custom_fixture)
     end
 
     it 'should convert correctly from windows to unix format' do
-      BreakVerter.convert(windows_fixture, :unix).should eql(unix_fixture)
+      Aef::BreakVerter.convert(windows_fixture, :unix).should eql(unix_fixture)
     end
 
     it 'should convert correctly from windows to mac format' do
-      BreakVerter.convert(windows_fixture, :mac).should eql(mac_fixture)
+      Aef::BreakVerter.convert(windows_fixture, :mac).should eql(mac_fixture)
     end
 
     it 'should convert correctly from unix to a custom format' do
-      BreakVerter.convert(windows_fixture, 'fnord').should eql(custom_fixture)
+      Aef::BreakVerter.convert(windows_fixture, 'fnord').should eql(custom_fixture)
     end
 
     it 'should convert correctly from mac to unix format' do
-      BreakVerter.convert(mac_fixture, :unix).should eql(unix_fixture)
+      Aef::BreakVerter.convert(mac_fixture, :unix).should eql(unix_fixture)
     end
 
     it 'should convert correctly from mac to windows format' do
-      BreakVerter.convert(mac_fixture, :windows).should eql(windows_fixture)
+      Aef::BreakVerter.convert(mac_fixture, :windows).should eql(windows_fixture)
     end
 
     it 'should convert correctly from unix to a custom format' do
-      BreakVerter.convert(mac_fixture, 'fnord').should eql(custom_fixture)
+      Aef::BreakVerter.convert(mac_fixture, 'fnord').should eql(custom_fixture)
     end
   end
 

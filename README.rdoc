@@ -30,7 +30,7 @@ The default output encoding is unix. You can set the default with the environmen
 
   windows_string = "Abcdef\r\nAbcdef\r\nAbcdef"
 
-  BreakVerter.convert(windows_string, :unix) #=> "Abcdef\nAbcdef\nAbcdef"
+  Aef::BreakVerter.convert(windows_string, :unix) #=> "Abcdef\nAbcdef\nAbcdef"
 
 == REQUIREMENTS:
 
