@@ -2,11 +2,12 @@
 
 * Project: https://rubyforge.org/projects/aef/
 * RDoc: http://aef.rubyforge.org/breakverter/
+* Github: http://github.com/aef/breakverter/
 
 == DESCRIPTION:
 
-BreakVerter is Ruby library and commandline tool for conversion between
-linebreak encoding formats of unix, windows or mac.
+BreakVerter is Ruby library and commandline tool for conversion of text
+between linebreak encoding formats of unix, windows or mac.
 
 == FEATURES/PROBLEMS:
 
@@ -62,14 +63,14 @@ the following way:
 
 == REQUIREMENTS:
 
-* For general use:
-  * rubygems
+=== General
+* rubygems
 
-* For commandline use:
-  * user-choices
+=== Additional for commandline
+* user-choices
 
-* For automated testing:
-  * rspec
+=== Additional for automated testing
+* rspec
 
 == INSTALL:
 
@@ -119,14 +120,15 @@ If something goes wrong you should be noticed through failing examples.
 == DEVELOPMENT:
 
 This software is developed in the source code management system git hosted
-at github.org. You can download the complete sourcecode through the following
+at github.com. You can download the complete sourcecode through the following
 command:
 
-  git clone git://github.org/aef/breakverter.git
+  git clone git://github.com/aef/breakverter.git
 
 Help on making this software better is always very appreciated. If you want your
-changes to be included in the official release, please send me a patch. You can
-generate a patch-file by the following command:
+changes to be included in the official release, please send me a patch through
+the project's tracker at rubyforge.org. You can generate a patch-file by the
+following command:
 
   git diff > patch.diff
 

@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# BreakVerter is Ruby library and commandline tool for conversion between
-# linebreak encoding formats of unix, windows or mac.
+# BreakVerter is Ruby library and commandline tool for conversion of text
+# between linebreak encoding formats of unix, windows or mac.
 module Aef::BreakVerter
   VERSION = '1.1.2'
   
