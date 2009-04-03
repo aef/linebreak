@@ -35,4 +35,10 @@ module Aef::BreakVerter
 
     input.gsub(/\r(?:\n)?|\n/, BREAKS[output_encoding] || output_encoding)
   end
+
+  # Shortcut for direct receiver conversion, for example if BreakVerter is
+  # included into the string class
+  def linebreaks(output_encoding = :unix)
+    Aef::BreakVerter.convert(self, output_encoding)
+  end
 end

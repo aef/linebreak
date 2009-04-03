@@ -3,6 +3,7 @@
 * 1 major enhancement
 
   * Namespaced into module Aef
+  * Instance method added for on demand inclusion into the String class
 
 * 3 minor enhancement
 

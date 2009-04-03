@@ -18,19 +18,35 @@ to any of these formats.
 
 == SYNOPSIS:
 
-* In commandline:
+=== Commandline
 
   breakverter -o windows unix.txt windows.txt
 
 The default output encoding is unix. You can set the default with the environment variable BREAKVERTER_OUTPUT. If no target file is specified the output will be sent to STDOUT.
 
-* As library:
+=== Library
+
+First of all you have to load the BreakVerter gem:
 
   require 'breakverter'
+
+You can put strings or objects including a to_s method into the convert method
+and optionally define a target linebreak encoding. The default encoding is
+:unix. You can also choose :windows and :mac. Notice that the :mac encoding is
+deprecated. Modern Apple machines also use :unix linebreak encoding.
 
   windows_string = "Abcdef\r\nAbcdef\r\nAbcdef"
 
   Aef::BreakVerter.convert(windows_string, :unix) #=> "Abcdef\nAbcdef\nAbcdef"
+
+Alternatively you could include BreakVerter into the String class and use it in
+the following way:
+
+  class String
+    include Aef::BreakVerter
+  end
+
+  "Abcdef\nAbcdef\nAbcdef".linebreaks(:mac) #=> "Abcdef\rAbcdef\rAbcdef"
 
 == REQUIREMENTS:
 
