@@ -34,6 +34,9 @@ The default output encoding is unix. You can set the default with the environmen
 
 == REQUIREMENTS:
 
+* For general use:
+  * rubygems
+
 * For commandline use:
   * user-choices
 
@@ -84,6 +87,23 @@ to start the test runner:
   rake spec
 
 If something goes wrong you should be noticed through failing examples.
+
+== DEVELOPMENT:
+
+This software is developed in the source code management system git hosted
+at github.org. You can download the complete sourcecode through the following
+command:
+
+  git clone git://github.org/aef/breakverter.git
+
+Help on making this software better is always very appreciated. If you want your
+changes to be included in the official release, please send me a patch. You can
+generate a patch-file by the following command:
+
+  git diff > patch.diff
+
+Please make sure to write tests for your changes and notice that I can't promise
+to include your changes before reviewing them.
 
 == LICENSE:
 

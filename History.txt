@@ -5,6 +5,7 @@
   * Better metadata for gem
   * Test refactoring
   * Minor refactorings
+  * Renamed README.txt to README.rdoc for better look on github
 
 === 1.1.1 / 2009-03-08
 
