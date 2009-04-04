@@ -18,7 +18,7 @@
 # BreakVerter is Ruby library and commandline tool for conversion of text
 # between linebreak encoding formats of unix, windows or mac.
 module Aef::BreakVerter
-  VERSION = '1.1.2'
+  VERSION = '1.2.0'
   
   BREAKS = {
     :unix => "\n",

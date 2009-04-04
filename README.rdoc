@@ -6,7 +6,7 @@
 
 == DESCRIPTION:
 
-BreakVerter is Ruby library and commandline tool for conversion of text
+BreakVerter is a Ruby library and commandline tool for conversion of text
 between linebreak encoding formats of unix, windows or mac.
 
 == FEATURES/PROBLEMS:
@@ -63,7 +63,6 @@ the following way:
 
 == REQUIREMENTS:
 
-=== General
 * rubygems
 
 === Additional for commandline
@@ -120,7 +119,7 @@ If something goes wrong you should be noticed through failing examples.
 == DEVELOPMENT:
 
 This software is developed in the source code management system git hosted
-at github.com. You can download the complete sourcecode through the following
+at github.com. You can download the most recent sourcecode through the following
 command:
 
   git clone git://github.com/aef/breakverter.git
