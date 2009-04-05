@@ -26,4 +26,4 @@ module Aef
 
 end
 
-require 'lib/breakverter/breakverter'
+require File.join(File.dirname(__FILE__), 'breakverter/breakverter')

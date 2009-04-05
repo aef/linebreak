@@ -78,15 +78,20 @@ class Aef::BreakVerter::Application < UserChoices::Command
 
   # Version and licensing information output
   def version
-    klass = Aef::BreakVerter
-    puts "#{klass.name} #{klass::VERSION}"
+    name = 'BreakVerter'
+    puts "#{name} #{Aef::BreakVerter::VERSION}"
     puts
     puts 'Project: https://rubyforge.org/projects/aef/'
-    puts "RDoc: http://aef.rubyforge.org/#{klass.name.downcase}/"
+    puts "RDoc: http://aef.rubyforge.org/#{name.downcase}/"
+    puts "Github: http://github.com/aef/#{name.downcase}/"
     puts
     puts 'Copyright 2009 Alexander E. Fischer <aef@raxys.net>'
     # Read and print licensing information from the top of this file
-    puts File.read(__FILE__).lines.map{|line| line[2..-1]}[5..17]
+    if Gem::Version.new(RUBY_VERSION) <= Gem::Version.new('1.8.6')
+      puts File.read(__FILE__).map{|line| line[2..-1]}[5..17]
+    else
+      puts File.read(__FILE__).lines.map{|line| line[2..-1]}[5..17]
+    end
     exit
   end
 

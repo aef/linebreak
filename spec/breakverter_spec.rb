@@ -25,7 +25,7 @@ module BreakVerterSpecHelper
   # If there is a way to get the executable path of the currently running ruby
   # interpreter, please tell me how.
   warn 'Attention: If the ruby interpreter to be tested with is not ruby in the' +
-       'default path, you have to change this manually in spec/breakverter_spec.rb'
+       "default path, you have to change this manually in #{__FILE__} line #{__LINE__ + 1}"
   RUBY_PATH = 'ruby'
 
   def executable_path
@@ -144,6 +144,32 @@ describe Aef::BreakVerter do
 
       File.read(location).should eql(windows_fixture)
       File.unlink(location)
+    end
+
+    it 'should display correct version and licensing information with the --version switch' do
+      message = <<-EOF
+BreakVerter 1.2.0
+
+Project: https://rubyforge.org/projects/aef/
+RDoc: http://aef.rubyforge.org/breakverter/
+Github: http://github.com/aef/breakverter/
+
+Copyright 2009 Alexander E. Fischer <aef@raxys.net>
+
+BreakVerter is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+EOF
+      `#{executable_path} --version`.should eql(message)
     end
   end
 end
