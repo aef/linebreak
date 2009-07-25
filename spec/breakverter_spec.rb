@@ -15,29 +15,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'lib/breakverter'
 require 'tempfile'
-
 require 'rubygems'
-require 'sys/uname'
+require 'rbconfig'
+
+require 'lib/breakverter'
 
 module BreakVerterSpecHelper
-  # If there is a way to get the executable path of the currently running ruby
-  # interpreter, please tell me how.
-  warn 'Attention: If the ruby interpreter to be tested with is not ruby in the' +
-       "default path, you have to change this manually in #{__FILE__} line #{__LINE__ + 1}"
-  RUBY_PATH = 'ruby'
+  INTERPRETER = Pathname(RbConfig::CONFIG['bindir']) + RbConfig::CONFIG['ruby_install_name']
+  FIXTURES_DIR = Pathname('spec/fixtures')
 
   def executable_path
-    "#{RUBY_PATH} bin/breakverter"
+    "#{INTERPRETER} bin/breakverter"
   end
 
   def fixture_path(name)
-    File.join('spec/fixtures', name)
+    FIXTURES_DIR + name
   end
 
   def windows?
-    Sys::Uname.sysname.downcase.include?('windows')
+    RbConfig::CONFIG['target_os'].downcase.include?('win')
   end
 
   def unix_fixture
@@ -147,8 +144,8 @@ describe Aef::BreakVerter do
     end
 
     it 'should display correct version and licensing information with the --version switch' do
-      message = <<-EOF
-BreakVerter 1.2.0
+      message = <<-EOS
+BreakVerter #{Aef::BreakVerter::VERSION}
 
 Project: https://rubyforge.org/projects/aef/
 RDoc: http://aef.rubyforge.org/breakverter/
@@ -168,7 +165,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-EOF
+      EOS
+      
       `#{executable_path} --version`.should eql(message)
     end
   end
