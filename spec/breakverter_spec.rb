@@ -16,10 +16,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'tempfile'
-require 'rubygems'
 require 'rbconfig'
+require 'open3'
+require 'rubygems'
 
-require 'lib/breakverter'
+require 'lib/breakverter/string_extension'
 
 module BreakVerterSpecHelper
   INTERPRETER = Pathname(RbConfig::CONFIG['bindir']) + RbConfig::CONFIG['ruby_install_name']
@@ -52,46 +53,278 @@ module BreakVerterSpecHelper
   def custom_fixture
     "AbcdeffnordAbcdeffnordAbcdef"
   end
+
+  def none_fixture
+    "AbcdefAbcdefAbcdef"
+  end
+
+  def unix_windows_fixture
+    unix_fixture + windows_fixture
+  end
+
+  def windows_mac_fixture
+    windows_fixture + mac_fixture
+  end
+
+  def mac_unix_fixture
+    mac_fixture + unix_fixture
+  end
+
+  def unix_windows_mac_fixture
+    unix_fixture + windows_fixture + mac_fixture
+  end
+end
+
+if Gem::Version.new(RUBY_VERSION) <= Gem::Version.new('1.8.6')
+  warn %{\nThe 16 specs of the "encodings" methods fail on 1.8.6 and } +
+       'below because of invalid hash comparison which affects ' +
+       'comparison of the result Sets. This should not be a big problem.'
 end
 
 describe Aef::BreakVerter do
   include BreakVerterSpecHelper
 
   context 'library' do
-    it 'should convert correctly from unix to windows format' do
-      Aef::BreakVerter.convert(unix_fixture, :windows).should eql(windows_fixture)
+    describe 'method "encode"' do
+      it 'should correctly work from unix to windows format' do
+        Aef::BreakVerter.encode(unix_fixture, :windows).should eql(windows_fixture)
+      end
+
+      it 'should correctly work from unix to mac format' do
+        Aef::BreakVerter.encode(unix_fixture, :mac).should eql(mac_fixture)
+      end
+
+      it 'should correctly work from unix to a custom format' do
+        Aef::BreakVerter.encode(unix_fixture, 'fnord').should eql(custom_fixture)
+      end
+
+      it 'should correctly work from windows to unix format' do
+        Aef::BreakVerter.encode(windows_fixture, :unix).should eql(unix_fixture)
+      end
+
+      it 'should correctly work from windows to mac format' do
+        Aef::BreakVerter.encode(windows_fixture, :mac).should eql(mac_fixture)
+      end
+
+      it 'should correctly work from unix to a custom format' do
+        Aef::BreakVerter.encode(windows_fixture, 'fnord').should eql(custom_fixture)
+      end
+
+      it 'should correctly work from mac to unix format' do
+        Aef::BreakVerter.encode(mac_fixture, :unix).should eql(unix_fixture)
+      end
+
+      it 'should correctly work from mac to windows format' do
+        Aef::BreakVerter.encode(mac_fixture, :windows).should eql(windows_fixture)
+      end
+
+      it 'should correctly work from unix to a custom format' do
+        Aef::BreakVerter.encode(mac_fixture, 'fnord').should eql(custom_fixture)
+      end
     end
 
-    it 'should convert correctly from unix to mac format' do
-      Aef::BreakVerter.convert(unix_fixture, :mac).should eql(mac_fixture)
+    describe 'method "encodings"' do
+      it 'should detect unix format' do
+        Aef::BreakVerter.encodings(unix_fixture).should eql([:unix].to_set)
+      end
+
+      it 'should detect windows format' do
+        Aef::BreakVerter.encodings(windows_fixture).should eql([:windows].to_set)
+      end
+
+      it 'should detect mac format' do
+        Aef::BreakVerter.encodings(mac_fixture).should eql([:mac].to_set)
+      end
+
+      it 'should detect mixed unix and windows format' do
+        Aef::BreakVerter.encodings(unix_windows_fixture).should eql([:unix, :windows].to_set)
+      end
+
+      it 'should detect mixed windows and mac format' do
+        Aef::BreakVerter.encodings(windows_mac_fixture).should eql([:windows, :mac].to_set)
+      end
+
+      it 'should detect mixed mac and unix format' do
+        Aef::BreakVerter.encodings(mac_unix_fixture).should eql([:mac, :unix].to_set)
+      end
+
+      it 'should detect mixed unix, windows and mac format' do
+        Aef::BreakVerter.encodings(unix_windows_mac_fixture).should eql([:unix, :windows, :mac].to_set)
+      end
+
+      it 'should detect correctly strings without linebreaks' do
+        Aef::BreakVerter.encodings(none_fixture).should eql(Set.new)
+      end
     end
 
-    it 'should convert correctly from unix to a custom format' do
-      Aef::BreakVerter.convert(unix_fixture, 'fnord').should eql(custom_fixture)
+    describe 'method "encoding?"' do
+      system_combinations = [
+        :unix,
+        :windows,
+        :mac,
+        :unix_windows,
+        :windows_mac,
+        :mac_unix,
+        :unix_windows_mac
+      ]
+
+      system_combinations.each do |system_combination|
+        system_combinations.each do |fixture_systems|
+
+          expected_systems = system_combination.to_s.split('_').inject([]) do |systems, system|
+            systems << system.to_sym
+          end
+
+          it "should respond correctly for #{expected_systems.join(' and ')} encoding" do
+            fixture = send "#{fixture_systems}_fixture"
+
+            result = Aef::BreakVerter.encoding?(fixture, expected_systems)
+
+            if system_combination == fixture_systems
+              result.should be_true
+            else
+              result.should be_false
+            end
+          end
+
+          if expected_systems.size > 1
+            it "should respond correctly for #{expected_systems.join(' and ')} encoding (using argument list)" do
+              fixture = send "#{fixture_systems}_fixture"
+
+              result = Aef::BreakVerter.encoding?(fixture, *expected_systems)
+
+              if system_combination == fixture_systems
+                result.should be_true
+              else
+                result.should be_false
+              end
+            end
+          end
+        end
+      end
+
+    end
+  end
+
+  context 'string extension' do
+    describe 'method "encode"' do
+      it 'should correctly work from unix to windows format' do
+        unix_fixture.linebreak_encode(:windows).should eql(windows_fixture)
+      end
+
+      it 'should correctly work from unix to mac format' do
+        unix_fixture.linebreak_encode(:mac).should eql(mac_fixture)
+      end
+
+      it 'should correctly work from unix to a custom format' do
+        unix_fixture.linebreak_encode('fnord').should eql(custom_fixture)
+      end
+
+      it 'should correctly work from windows to unix format' do
+        windows_fixture.linebreak_encode(:unix).should eql(unix_fixture)
+      end
+
+      it 'should correctly work from windows to mac format' do
+        windows_fixture.linebreak_encode(:mac).should eql(mac_fixture)
+      end
+
+      it 'should correctly work from unix to a custom format' do
+        windows_fixture.linebreak_encode('fnord').should eql(custom_fixture)
+      end
+
+      it 'should correctly work from mac to unix format' do
+        mac_fixture.linebreak_encode(:unix).should eql(unix_fixture)
+      end
+
+      it 'should correctly work from mac to windows format' do
+        mac_fixture.linebreak_encode(:windows).should eql(windows_fixture)
+      end
+
+      it 'should correctly work from unix to a custom format' do
+        mac_fixture.linebreak_encode('fnord').should eql(custom_fixture)
+      end
     end
 
-    it 'should convert correctly from windows to unix format' do
-      Aef::BreakVerter.convert(windows_fixture, :unix).should eql(unix_fixture)
+    describe 'method "encodings"' do
+      it 'should detect unix format' do
+        unix_fixture.linebreak_encodings.should eql([:unix].to_set)
+      end
+
+      it 'should detect windows format' do
+        windows_fixture.linebreak_encodings.should eql([:windows].to_set)
+      end
+
+      it 'should detect mac format' do
+        mac_fixture.linebreak_encodings.should eql([:mac].to_set)
+      end
+
+      it 'should detect mixed unix and windows format' do
+        unix_windows_fixture.linebreak_encodings.should eql([:unix, :windows].to_set)
+      end
+
+      it 'should detect mixed windows and mac format' do
+        windows_mac_fixture.linebreak_encodings.should eql([:windows, :mac].to_set)
+      end
+
+      it 'should detect mixed mac and unix format' do
+        mac_unix_fixture.linebreak_encodings.should eql([:mac, :unix].to_set)
+      end
+
+      it 'should detect mixed unix, windows and mac format' do
+        unix_windows_mac_fixture.linebreak_encodings.should eql([:unix, :windows, :mac].to_set)
+      end
+
+      it 'should detect correctly strings without linebreaks' do
+        none_fixture.linebreak_encodings.should eql(Set.new)
+      end
     end
 
-    it 'should convert correctly from windows to mac format' do
-      Aef::BreakVerter.convert(windows_fixture, :mac).should eql(mac_fixture)
-    end
+    describe 'method "encoding?"' do
+      system_combinations = [
+        :unix,
+        :windows,
+        :mac,
+        :unix_windows,
+        :windows_mac,
+        :mac_unix,
+        :unix_windows_mac
+      ]
 
-    it 'should convert correctly from unix to a custom format' do
-      Aef::BreakVerter.convert(windows_fixture, 'fnord').should eql(custom_fixture)
-    end
+      system_combinations.each do |system_combination|
+        system_combinations.each do |fixture_systems|
 
-    it 'should convert correctly from mac to unix format' do
-      Aef::BreakVerter.convert(mac_fixture, :unix).should eql(unix_fixture)
-    end
+          expected_systems = system_combination.to_s.split('_').inject([]) do |systems, system|
+            systems << system.to_sym
+          end
 
-    it 'should convert correctly from mac to windows format' do
-      Aef::BreakVerter.convert(mac_fixture, :windows).should eql(windows_fixture)
-    end
+          it "should respond correctly for #{expected_systems.join(' and ')} encoding" do
+            fixture = send "#{fixture_systems}_fixture"
 
-    it 'should convert correctly from unix to a custom format' do
-      Aef::BreakVerter.convert(mac_fixture, 'fnord').should eql(custom_fixture)
+            result = fixture.linebreak_encoding?(expected_systems)
+
+            if system_combination == fixture_systems
+              result.should be_true
+            else
+              result.should be_false
+            end
+          end
+
+          if expected_systems.size > 1
+            it "should respond correctly for #{expected_systems.join(' and ')} encoding (using argument list)" do
+              fixture = send "#{fixture_systems}_fixture"
+
+              result = fixture.linebreak_encoding?(*expected_systems)
+
+              if system_combination == fixture_systems
+                result.should be_true
+              else
+                result.should be_false
+              end
+            end
+          end
+        end
+      end
+
     end
   end
 
@@ -109,8 +342,10 @@ describe Aef::BreakVerter do
     end
 
     it 'should abort on invalid output formats' do
-      puts "\nAn error output after this line is expected behavior, simply ignore it:\n"
-      `#{executable_path} -o fnord #{fixture_path('mac.txt')}`.should be_empty
+      Open3.popen3("#{executable_path} -o fnord #{fixture_path('mac.txt')}") do |stdin, stdout, stderr|
+        stdout.read.should be_empty
+        stderr.read.should_not be_empty
+      end
     end
 
     it 'should accept BREAKVERTER_OUTPUT environment variable to specify output format' do

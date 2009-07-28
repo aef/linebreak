@@ -20,13 +20,10 @@
 # TODO: If user-choices patch gets accepted, use :one_way => true for --version
 # TODO: If user-choices patch gets accepted, use :upcase for environment variables
 
+require 'rubygems'
+
 # If library is not locally accessible, use gem to include it.
-begin
-  require 'lib/breakverter'
-rescue LoadError
-  require 'rubygems'
-  require 'breakverter'
-end
+require 'lib/breakverter' rescue LoadError require 'breakverter'
 
 # User friendly message if user-choices is not available
 begin
@@ -55,10 +52,10 @@ class Aef::BreakVerter::Application < UserChoices::Command
 
   # Define configuration options
   def add_choices(builder)
-    output_values = Aef::BreakVerter::BREAKS.keys.map{|key| key.to_s}
+    output_values = Aef::BreakVerter::BREAK_BY_SYSTEM.keys.map{|key| key.to_s}
     builder.add_choice(:output, :default => 'unix', :type => output_values) do |cli|
       cli.uses_option('-o', '--output PLATFORM',
-        "Output formatting. Possible settings: #{Aef::BreakVerter::BREAKS.keys.join(', ')}")
+        "Output formatting. Possible settings: #{Aef::BreakVerter::BREAK_BY_SYSTEM.keys.join(', ')}")
     end
 
     builder.add_choice(:version, :default => false, :type => :boolean) do |cli|
@@ -109,7 +106,7 @@ class Aef::BreakVerter::Application < UserChoices::Command
       warn "Input file access denied (#{@user_choices[:input_filename]})"; exit false
     end
     
-    result = Aef::BreakVerter.convert(File.read(@user_choices[:input_filename]), @user_choices[:output].to_sym)
+    result = Aef::BreakVerter.encode(File.read(@user_choices[:input_filename]), @user_choices[:output].to_sym)
 
     if @user_choices[:output_filename] == '-'
       puts result

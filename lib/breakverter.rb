@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+require 'pathname'
+require 'set'
+
 # Namespace for projects of Alexander E. Fischer <aef@raxys.net>
 #
 # If you want to be able to simply type Example instead of Aef::Example to
@@ -26,4 +29,4 @@ module Aef
 
 end
 
-require File.join(File.dirname(__FILE__), 'breakverter/breakverter')
+require Pathname(__FILE__).dirname + 'breakverter/breakverter'
