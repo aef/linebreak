@@ -3,10 +3,10 @@ Manifest.txt
 README.rdoc
 COPYING.txt
 Rakefile
-bin/breakverter
-lib/aef/breakverter.rb
-lib/aef/breakverter/breakverter.rb
-spec/breakverter_spec.rb
+bin/linebreak
+lib/aef/linebreak.rb
+lib/aef/linebreak/linebreak.rb
+spec/linebreak_spec.rb
 spec/fixtures/unix.txt
 spec/fixtures/windows.txt
 spec/fixtures/mac.txt

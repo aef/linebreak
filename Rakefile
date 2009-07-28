@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'hoe'
 
-Hoe.spec('breakverter') do
+Hoe.spec('linebreak') do
   developer('Alexander E. Fischer', 'aef@raxys.net')
 
   self.rubyforge_name = 'aef'
@@ -12,7 +12,7 @@ Hoe.spec('breakverter') do
   self.readme_file = 'README.rdoc'
   self.extra_rdoc_files = %w{README.rdoc}
   self.spec_extras = {
-    :rdoc_options => ['--main', 'README.rdoc', '--inline-source', '--line-numbers', '--title', 'BreakVerter']
+    :rdoc_options => ['--main', 'README.rdoc', '--inline-source', '--line-numbers', '--title', 'Linebreak']
   }
 end
 

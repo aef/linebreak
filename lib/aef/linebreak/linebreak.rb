@@ -1,8 +1,8 @@
 # Copyright 2009 Alexander E. Fischer <aef@raxys.net>
 #
-# This file is part of BreakVerter.
+# This file is part of Linebreak.
 #
-# BreakVerter is free software: you can redistribute it and/or modify
+# Linebreak is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -15,14 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# BreakVerter is Ruby library and commandline tool for conversion of text
+require 'pathname'
+require 'set'
+
+# Linebreak is Ruby library and commandline tool for conversion of text
 # between linebreak encoding formats of unix, windows or mac.
 #
 # If you want to use the String extension methods, simply use the following
 # command:
 #
-#   require 'aef/breakverter/string_extension'
-module Aef::BreakVerter
+#   require 'aef/linebreak/string_extension'
+module Aef::Linebreak
   VERSION = '1.3.0'
   
   BREAK_BY_SYSTEM = {
@@ -68,7 +71,7 @@ module Aef::BreakVerter
       end
     end
 
-    Aef::BreakVerter.encodings(input) == Set.new(encodings)
+    Aef::Linebreak.encodings(input) == Set.new(encodings)
   end
 
   # Create a copy of a string with all the string's linebreaks replaced by
@@ -90,7 +93,7 @@ module Aef::BreakVerter
   #
   # This method is supposed to be used as a method of String.
   def linebreak_encodings
-    Aef::BreakVerter.encodings(self)
+    Aef::Linebreak.encodings(self)
   end
 
   # Checks whether the string includes linebreaks of all the given encoding
@@ -100,7 +103,7 @@ module Aef::BreakVerter
   #
   # This method is supposed to be used as a method of String.
   def linebreak_encoding?(*encodings)
-    Aef::BreakVerter.encoding?(self, encodings)
+    Aef::Linebreak.encoding?(self, encodings)
   end
 
   # Create a copy of the string with all the string's linebreaks replaced by
@@ -111,6 +114,6 @@ module Aef::BreakVerter
   #
   # This method is supposed to be used as a method of String.
   def linebreak_encode(system_or_replacement = :unix)
-    Aef::BreakVerter.encode(self, system_or_replacement)
+    Aef::Linebreak.encode(self, system_or_replacement)
   end
 end

@@ -1,8 +1,8 @@
 # Copyright 2009 Alexander E. Fischer <aef@raxys.net>
 #
-# This file is part of BreakVerter.
+# This file is part of Linebreak.
 #
-# BreakVerter is free software: you can redistribute it and/or modify
+# Linebreak is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -20,14 +20,14 @@ require 'rbconfig'
 require 'open3'
 require 'rubygems'
 
-require 'lib/aef/breakverter/string_extension'
+require 'lib/aef/linebreak/string_extension'
 
-module BreakVerterSpecHelper
+module LinebreakSpecHelper
   INTERPRETER = Pathname(RbConfig::CONFIG['bindir']) + RbConfig::CONFIG['ruby_install_name']
   FIXTURES_DIR = Pathname('spec/fixtures')
 
   def executable_path
-    "#{INTERPRETER} bin/breakverter"
+    "#{INTERPRETER} bin/linebreak"
   end
 
   def fixture_path(name)
@@ -81,79 +81,79 @@ if Gem::Version.new(RUBY_VERSION) <= Gem::Version.new('1.8.6')
        'comparison of the result Sets. This should not be a big problem.'
 end
 
-describe Aef::BreakVerter do
-  include BreakVerterSpecHelper
+describe Aef::Linebreak do
+  include LinebreakSpecHelper
 
   context 'library' do
     describe 'method "encode"' do
       it 'should correctly work from unix to windows format' do
-        Aef::BreakVerter.encode(unix_fixture, :windows).should eql(windows_fixture)
+        Aef::Linebreak.encode(unix_fixture, :windows).should eql(windows_fixture)
       end
 
       it 'should correctly work from unix to mac format' do
-        Aef::BreakVerter.encode(unix_fixture, :mac).should eql(mac_fixture)
+        Aef::Linebreak.encode(unix_fixture, :mac).should eql(mac_fixture)
       end
 
       it 'should correctly work from unix to a custom format' do
-        Aef::BreakVerter.encode(unix_fixture, 'fnord').should eql(custom_fixture)
+        Aef::Linebreak.encode(unix_fixture, 'fnord').should eql(custom_fixture)
       end
 
       it 'should correctly work from windows to unix format' do
-        Aef::BreakVerter.encode(windows_fixture, :unix).should eql(unix_fixture)
+        Aef::Linebreak.encode(windows_fixture, :unix).should eql(unix_fixture)
       end
 
       it 'should correctly work from windows to mac format' do
-        Aef::BreakVerter.encode(windows_fixture, :mac).should eql(mac_fixture)
+        Aef::Linebreak.encode(windows_fixture, :mac).should eql(mac_fixture)
       end
 
       it 'should correctly work from unix to a custom format' do
-        Aef::BreakVerter.encode(windows_fixture, 'fnord').should eql(custom_fixture)
+        Aef::Linebreak.encode(windows_fixture, 'fnord').should eql(custom_fixture)
       end
 
       it 'should correctly work from mac to unix format' do
-        Aef::BreakVerter.encode(mac_fixture, :unix).should eql(unix_fixture)
+        Aef::Linebreak.encode(mac_fixture, :unix).should eql(unix_fixture)
       end
 
       it 'should correctly work from mac to windows format' do
-        Aef::BreakVerter.encode(mac_fixture, :windows).should eql(windows_fixture)
+        Aef::Linebreak.encode(mac_fixture, :windows).should eql(windows_fixture)
       end
 
       it 'should correctly work from unix to a custom format' do
-        Aef::BreakVerter.encode(mac_fixture, 'fnord').should eql(custom_fixture)
+        Aef::Linebreak.encode(mac_fixture, 'fnord').should eql(custom_fixture)
       end
     end
 
     describe 'method "encodings"' do
       it 'should detect unix format' do
-        Aef::BreakVerter.encodings(unix_fixture).should eql([:unix].to_set)
+        Aef::Linebreak.encodings(unix_fixture).should eql([:unix].to_set)
       end
 
       it 'should detect windows format' do
-        Aef::BreakVerter.encodings(windows_fixture).should eql([:windows].to_set)
+        Aef::Linebreak.encodings(windows_fixture).should eql([:windows].to_set)
       end
 
       it 'should detect mac format' do
-        Aef::BreakVerter.encodings(mac_fixture).should eql([:mac].to_set)
+        Aef::Linebreak.encodings(mac_fixture).should eql([:mac].to_set)
       end
 
       it 'should detect mixed unix and windows format' do
-        Aef::BreakVerter.encodings(unix_windows_fixture).should eql([:unix, :windows].to_set)
+        Aef::Linebreak.encodings(unix_windows_fixture).should eql([:unix, :windows].to_set)
       end
 
       it 'should detect mixed windows and mac format' do
-        Aef::BreakVerter.encodings(windows_mac_fixture).should eql([:windows, :mac].to_set)
+        Aef::Linebreak.encodings(windows_mac_fixture).should eql([:windows, :mac].to_set)
       end
 
       it 'should detect mixed mac and unix format' do
-        Aef::BreakVerter.encodings(mac_unix_fixture).should eql([:mac, :unix].to_set)
+        Aef::Linebreak.encodings(mac_unix_fixture).should eql([:mac, :unix].to_set)
       end
 
       it 'should detect mixed unix, windows and mac format' do
-        Aef::BreakVerter.encodings(unix_windows_mac_fixture).should eql([:unix, :windows, :mac].to_set)
+        Aef::Linebreak.encodings(unix_windows_mac_fixture).should eql([:unix, :windows, :mac].to_set)
       end
 
       it 'should detect correctly strings without linebreaks' do
-        Aef::BreakVerter.encodings(none_fixture).should eql(Set.new)
+        Aef::Linebreak.encodings(none_fixture).should eql(Set.new)
       end
     end
 
@@ -178,7 +178,7 @@ describe Aef::BreakVerter do
           it "should respond correctly for #{expected_systems.join(' and ')} encoding" do
             fixture = send "#{fixture_systems}_fixture"
 
-            result = Aef::BreakVerter.encoding?(fixture, expected_systems)
+            result = Aef::Linebreak.encoding?(fixture, expected_systems)
 
             if system_combination == fixture_systems
               result.should be_true
@@ -191,7 +191,7 @@ describe Aef::BreakVerter do
             it "should respond correctly for #{expected_systems.join(' and ')} encoding (using argument list)" do
               fixture = send "#{fixture_systems}_fixture"
 
-              result = Aef::BreakVerter.encoding?(fixture, *expected_systems)
+              result = Aef::Linebreak.encoding?(fixture, *expected_systems)
 
               if system_combination == fixture_systems
                 result.should be_true
@@ -348,26 +348,26 @@ describe Aef::BreakVerter do
       end
     end
 
-    it 'should accept BREAKVERTER_OUTPUT environment variable to specify output format' do
+    it 'should accept LINEBREAK_OUTPUT environment variable to specify output format' do
       if windows?
-        `set BREAKVERTER_OUTPUT=mac`
+        `set LINEBREAK_OUTPUT=mac`
         `#{executable_path} --output mac #{fixture_path('windows.txt')}`.should eql(mac_fixture + "\n")
       else
-        `env BREAKVERTER_OUTPUT=mac #{executable_path} --output mac #{fixture_path('windows.txt')}`.should eql(mac_fixture + "\n")
+        `env LINEBREAK_OUTPUT=mac #{executable_path} --output mac #{fixture_path('windows.txt')}`.should eql(mac_fixture + "\n")
       end
     end
 
-    it 'should use output format specified with -o even if BREAKVERTER_OUTPUT environment variable is set' do
+    it 'should use output format specified with -o even if LINEBREAK_OUTPUT environment variable is set' do
       if windows?
-        `set BREAKVERTER_OUTPUT=windows`
+        `set LINEBREAK_OUTPUT=windows`
         `#{executable_path} -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
       else
-        `env BREAKVERTER_OUTPUT=windows #{executable_path} -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
+        `env LINEBREAK_OUTPUT=windows #{executable_path} -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
       end
     end
 
     it 'should use a second argument as target file' do
-      temp_file = Tempfile.open('breakverter_spec')
+      temp_file = Tempfile.open('linebreak_spec')
       location = temp_file.path
       temp_file.close
       temp_file.unlink
@@ -380,15 +380,15 @@ describe Aef::BreakVerter do
 
     it 'should display correct version and licensing information with the --version switch' do
       message = <<-EOS
-BreakVerter #{Aef::BreakVerter::VERSION}
+Linebreak #{Aef::Linebreak::VERSION}
 
 Project: https://rubyforge.org/projects/aef/
-RDoc: http://aef.rubyforge.org/breakverter/
-Github: http://github.com/aef/breakverter/
+RDoc: http://aef.rubyforge.org/linebreak/
+Github: http://github.com/aef/linebreak/
 
 Copyright 2009 Alexander E. Fischer <aef@raxys.net>
 
-BreakVerter is free software: you can redistribute it and/or modify
+Linebreak is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.

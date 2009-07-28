@@ -1,12 +1,12 @@
-= BreakVerter
+= Linebreak
 
 * Project: https://rubyforge.org/projects/aef/
-* RDoc: http://aef.rubyforge.org/breakverter/
-* Github: http://github.com/aef/breakverter/
+* RDoc: http://aef.rubyforge.org/linebreak/
+* Github: http://github.com/aef/linebreak/
 
 == DESCRIPTION:
 
-BreakVerter is a Ruby library and commandline tool for conversion of text
+Linebreak is a Ruby library and commandline tool for conversion of text
 between linebreak encoding formats of unix, windows or mac.
 
 == FEATURES/PROBLEMS:
@@ -26,23 +26,23 @@ between linebreak encoding formats of unix, windows or mac.
 
 The default output encoding is unix. You can also choose mac and windows.
 
-  breakverter -o windows unix.txt windows.txt
+  linebreak -o windows unix.txt windows.txt
 
 If no target file is specified the output will be sent to STDOUT.
 
-  breakverter -o windows mac.txt > windows.txt
+  linebreak -o windows mac.txt > windows.txt
 
-You can set the default with the environment variable BREAKVERTER_OUTPUT.
+You can set the default with the environment variable LINEBREAK_OUTPUT.
 
-  export BREAKVERTER_OUTPUT=mac
+  export LINEBREAK_OUTPUT=mac
 
-  breakverter windows.txt mac.txt
+  linebreak windows.txt mac.txt
 
 === Library
 
-First of all you have to load the BreakVerter gem:
+First of all you have to load the Linebreak gem:
 
-  require 'aef/breakverter'
+  require 'aef/linebreak'
 
 You can put strings or objects responding to to_s into the convert method and
 optionally define a target linebreak encoding. The default encoding is :unix.
@@ -51,13 +51,13 @@ deprecated. Modern Apple machines also use :unix linebreak encoding.
 
   windows_string = "Abcdef\r\nAbcdef\r\nAbcdef"
 
-  Aef::BreakVerter.convert(windows_string, :unix) #=> "Abcdef\nAbcdef\nAbcdef"
+  Aef::Linebreak.convert(windows_string, :unix) #=> "Abcdef\nAbcdef\nAbcdef"
 
-Alternatively you could include BreakVerter into the String class and use it in
+Alternatively you could include Linebreak into the String class and use it in
 the following way:
 
   class String
-    include Aef::BreakVerter
+    include Aef::Linebreak
   end
 
   "Abcdef\nAbcdef\nAbcdef".linebreaks(:mac) #=> "Abcdef\rAbcdef\rAbcdef"
@@ -78,7 +78,7 @@ the following way:
 
 === Normal
 
-  gem install breakverter
+  gem install linebreak
 
 Additionally for the commandline tool:
 
@@ -100,7 +100,7 @@ Add the key to your rubygems' trusted certificates by the following command:
 Now you can install the gem while automatically verifying it's signature by the
 following command:
 
-  gem install breakverter --ignore-dependencies -P HighSecurity
+  gem install linebreak --ignore-dependencies -P HighSecurity
 
 Please notice that you will need other keys for dependent libraries, so you may
 have to install dependencies manually.
@@ -110,7 +110,7 @@ have to install dependencies manually.
 You can test this package through rspec on your system. First find the path
 where the gem was installed to:
 
-  gem which breakverter
+  gem which linebreak
 
 Go into the root directory of the installed gem and run the following command
 to start the test runner:
@@ -129,7 +129,7 @@ This software is developed in the source code management system git hosted
 at github.com. You can download the most recent sourcecode through the following
 command:
 
-  git clone git://github.com/aef/breakverter.git
+  git clone git://github.com/aef/linebreak.git
 
 Help on making this software better is always very appreciated. If you want your
 changes to be included in the official release, please send me a patch through
@@ -145,9 +145,9 @@ to include your changes before reviewing them.
 
 Copyright 2009 Alexander E. Fischer <aef@raxys.net>
 
-This file is part of BreakVerter.
+This file is part of Linebreak.
 
-BreakVerter is free software: you can redistribute it and/or modify
+Linebreak is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.

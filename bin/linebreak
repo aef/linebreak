@@ -2,9 +2,9 @@
 # 
 # Copyright 2009 Alexander E. Fischer <aef@raxys.net>
 #
-# This file is part of BreakVerter.
+# This file is part of Linebreak.
 #
-# BreakVerter is free software: you can redistribute it and/or modify
+# Linebreak is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -23,7 +23,7 @@
 require 'rubygems'
 
 # If library is not locally accessible, use gem to include it.
-require 'lib/aef/breakverter' rescue LoadError require 'aef/breakverter'
+require 'lib/aef/linebreak' rescue LoadError require 'aef/linebreak'
 
 # User friendly message if user-choices is not available
 begin
@@ -33,7 +33,7 @@ rescue LoadError
 end
 
 # Application class for commandline interface
-class Aef::BreakVerter::Application < UserChoices::Command
+class Aef::Linebreak::Application < UserChoices::Command
   include UserChoices
 
   # Prepare configuration sources
@@ -42,20 +42,20 @@ class Aef::BreakVerter::Application < UserChoices::Command
       CommandLineSource, :usage,
       "Usage: #$PROGRAM_NAME [options] input-file [output-file]\n\n",
       "Convert a file with any linebreak encoding to a specific linebreak encoding.\n",
-      "Use the environment variable BREAKVERTER_OUTPUT to specify a default output encoding.\n"
+      "Use the environment variable LINEBREAK_OUTPUT to specify a default output encoding.\n"
     )
 
     builder.add_source(EnvironmentSource, :mapping,
-      :output => 'BREAKVERTER_OUTPUT'
+      :output => 'LINEBREAK_OUTPUT'
     )
   end
 
   # Define configuration options
   def add_choices(builder)
-    output_values = Aef::BreakVerter::BREAK_BY_SYSTEM.keys.map{|key| key.to_s}
+    output_values = Aef::Linebreak::BREAK_BY_SYSTEM.keys.map{|key| key.to_s}
     builder.add_choice(:output, :default => 'unix', :type => output_values) do |cli|
       cli.uses_option('-o', '--output PLATFORM',
-        "Output formatting. Possible settings: #{Aef::BreakVerter::BREAK_BY_SYSTEM.keys.join(', ')}")
+        "Output formatting. Possible settings: #{Aef::Linebreak::BREAK_BY_SYSTEM.keys.join(', ')}")
     end
 
     builder.add_choice(:version, :default => false, :type => :boolean) do |cli|
@@ -75,8 +75,8 @@ class Aef::BreakVerter::Application < UserChoices::Command
 
   # Version and licensing information output
   def version
-    name = 'BreakVerter'
-    puts "#{name} #{Aef::BreakVerter::VERSION}"
+    name = 'Linebreak'
+    puts "#{name} #{Aef::Linebreak::VERSION}"
     puts
     puts 'Project: https://rubyforge.org/projects/aef/'
     puts "RDoc: http://aef.rubyforge.org/#{name.downcase}/"
@@ -106,7 +106,7 @@ class Aef::BreakVerter::Application < UserChoices::Command
       warn "Input file access denied (#{@user_choices[:input_filename]})"; exit false
     end
     
-    result = Aef::BreakVerter.encode(File.read(@user_choices[:input_filename]), @user_choices[:output].to_sym)
+    result = Aef::Linebreak.encode(File.read(@user_choices[:input_filename]), @user_choices[:output].to_sym)
 
     if @user_choices[:output_filename] == '-'
       puts result
@@ -122,4 +122,4 @@ class Aef::BreakVerter::Application < UserChoices::Command
   end
 end
 
-S4tUtils.with_pleasant_exceptions {Aef::BreakVerter::Application.new.execute}
+S4tUtils.with_pleasant_exceptions {Aef::Linebreak::Application.new.execute}
