@@ -17,7 +17,7 @@
 
 require 'rubygems'
 
-require 'lib/breakverter' rescue LoadError require 'breakverter'
+require 'lib/aef/breakverter' rescue LoadError require 'aef/breakverter'
 
 class String
   include Aef::BreakVerter

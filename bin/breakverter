@@ -23,7 +23,7 @@
 require 'rubygems'
 
 # If library is not locally accessible, use gem to include it.
-require 'lib/breakverter' rescue LoadError require 'breakverter'
+require 'lib/aef/breakverter' rescue LoadError require 'aef/breakverter'
 
 # User friendly message if user-choices is not available
 begin

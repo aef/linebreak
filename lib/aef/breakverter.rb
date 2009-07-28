@@ -29,4 +29,5 @@ module Aef
 
 end
 
-require Pathname(__FILE__).dirname + 'breakverter/breakverter'
+#require Pathname(__FILE__).dirname + 'breakverter/breakverter'
+require 'lib/aef/breakverter/breakverter' rescue LoadError require 'aef/breakverter/breakverter'

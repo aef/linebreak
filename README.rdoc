@@ -42,7 +42,7 @@ You can set the default with the environment variable BREAKVERTER_OUTPUT.
 
 First of all you have to load the BreakVerter gem:
 
-  require 'breakverter'
+  require 'aef/breakverter'
 
 You can put strings or objects responding to to_s into the convert method and
 optionally define a target linebreak encoding. The default encoding is :unix.

@@ -20,7 +20,7 @@ require 'rbconfig'
 require 'open3'
 require 'rubygems'
 
-require 'lib/breakverter/string_extension'
+require 'lib/aef/breakverter/string_extension'
 
 module BreakVerterSpecHelper
   INTERPRETER = Pathname(RbConfig::CONFIG['bindir']) + RbConfig::CONFIG['ruby_install_name']

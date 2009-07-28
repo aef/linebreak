@@ -2,7 +2,6 @@
 
 require 'rubygems'
 require 'hoe'
-require './lib/breakverter.rb'
 
 Hoe.spec('breakverter') do
   developer('Alexander E. Fischer', 'aef@raxys.net')

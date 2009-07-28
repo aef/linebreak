@@ -4,8 +4,8 @@ README.rdoc
 COPYING.txt
 Rakefile
 bin/breakverter
-lib/breakverter.rb
-lib/breakverter/breakverter.rb
+lib/aef/breakverter.rb
+lib/aef/breakverter/breakverter.rb
 spec/breakverter_spec.rb
 spec/fixtures/unix.txt
 spec/fixtures/windows.txt

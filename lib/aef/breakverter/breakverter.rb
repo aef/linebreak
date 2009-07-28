@@ -21,7 +21,7 @@
 # If you want to use the String extension methods, simply use the following
 # command:
 #
-#   require 'breakverter/string_extension'
+#   require 'aef/breakverter/string_extension'
 module Aef::BreakVerter
   VERSION = '1.3.0'
   
