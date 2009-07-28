@@ -17,6 +17,9 @@
 
 require 'pathname'
 require 'set'
+require 'rubygems'
+
+require 'lib/aef' rescue LoadError require 'aef'
 
 # Linebreak is Ruby library and commandline tool for conversion of text
 # between linebreak encoding formats of unix, windows or mac.

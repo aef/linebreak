@@ -17,13 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# TODO: If user-choices patch gets accepted, use :one_way => true for --version
-# TODO: If user-choices patch gets accepted, use :upcase for environment variables
-
+require 'pathname'
 require 'rubygems'
-
-# If library is not locally accessible, use gem to include it.
-require 'lib/aef/linebreak' rescue LoadError require 'aef/linebreak'
 
 # User friendly message if user-choices is not available
 begin
@@ -32,94 +27,32 @@ rescue LoadError
   warn "This command needs the user-choices gem to be installed.\n\nSolution: gem install user-choices"; exit false
 end
 
-# Application class for commandline interface
-class Aef::Linebreak::Application < UserChoices::Command
-  include UserChoices
+commands_available = %w{encodings encode}
 
-  # Prepare configuration sources
-  def add_sources(builder)
-    builder.add_source(
-      CommandLineSource, :usage,
-      "Usage: #$PROGRAM_NAME [options] input-file [output-file]\n\n",
-      "Convert a file with any linebreak encoding to a specific linebreak encoding.\n",
-      "Use the environment variable LINEBREAK_OUTPUT to specify a default output encoding.\n"
-    )
+require 'lib/aef/linebreak/commands/encode' rescue LoadError require 'aef/linebreak/commands/encode'
 
-    builder.add_source(EnvironmentSource, :mapping,
-      :output => 'LINEBREAK_OUTPUT'
-    )
+command_name = ARGV.shift
+
+case command_name
+when Regexp.new(commands_available.join('|'))
+  command = Aef::Linebreak.const_get("#{command_name.capitalize}Command").new
+  S4tUtils.with_pleasant_exceptions {command.execute}
+else
+  name = 'Linebreak'
+  puts "Usage: #$PROGRAM_NAME {#{commands_available.join('|')}}"
+  puts
+  puts "#{name} #{Aef::Linebreak::VERSION}"
+  puts
+  puts 'Project: https://rubyforge.org/projects/aef/'
+  puts "RDoc: http://aef.rubyforge.org/#{name.downcase}/"
+  puts "Github: http://github.com/aef/#{name.downcase}/"
+  puts
+  puts 'Copyright 2009 Alexander E. Fischer <aef@raxys.net>'
+  # Read and print licensing information from the top of this file
+  if Gem::Version.new(RUBY_VERSION) <= Gem::Version.new('1.8.6')
+    puts File.read(__FILE__).map{|line| line[2..-1]}[5..17]
+  else
+    puts File.read(__FILE__).lines.map{|line| line[2..-1]}[5..17]
   end
-
-  # Define configuration options
-  def add_choices(builder)
-    output_values = Aef::Linebreak::BREAK_BY_SYSTEM.keys.map{|key| key.to_s}
-    builder.add_choice(:output, :default => 'unix', :type => output_values) do |cli|
-      cli.uses_option('-o', '--output PLATFORM',
-        "Output formatting. Possible settings: #{Aef::Linebreak::BREAK_BY_SYSTEM.keys.join(', ')}")
-    end
-
-    builder.add_choice(:version, :default => false, :type => :boolean) do |cli|
-      cli.uses_switch('-v', '--version', 'Display version and licensing information')
-    end
-
-    builder.add_choice(:filenames, :length => 0..2) {|cli| cli.uses_arglist}
-  end
-
-  # Manual option post processing
-  def postprocess_user_choices
-    version if @user_choices[:version]
-
-    @user_choices[:input_filename] = @user_choices[:filenames][0]
-    @user_choices[:output_filename] = @user_choices[:filenames][1] || '-'
-  end
-
-  # Version and licensing information output
-  def version
-    name = 'Linebreak'
-    puts "#{name} #{Aef::Linebreak::VERSION}"
-    puts
-    puts 'Project: https://rubyforge.org/projects/aef/'
-    puts "RDoc: http://aef.rubyforge.org/#{name.downcase}/"
-    puts "Github: http://github.com/aef/#{name.downcase}/"
-    puts
-    puts 'Copyright 2009 Alexander E. Fischer <aef@raxys.net>'
-    # Read and print licensing information from the top of this file
-    if Gem::Version.new(RUBY_VERSION) <= Gem::Version.new('1.8.6')
-      puts File.read(__FILE__).map{|line| line[2..-1]}[5..17]
-    else
-      puts File.read(__FILE__).lines.map{|line| line[2..-1]}[5..17]
-    end
-    exit
-  end
-
-  # Main program
-  def execute
-    unless @user_choices[:input_filename]
-      warn 'No input file given'; exit false
-    end
-
-    unless File.exists?(@user_choices[:input_filename])
-      warn "Input file not found (#{@user_choices[:input_filename]})"; exit false
-    end
-
-    unless File.readable?(@user_choices[:input_filename])
-      warn "Input file access denied (#{@user_choices[:input_filename]})"; exit false
-    end
-    
-    result = Aef::Linebreak.encode(File.read(@user_choices[:input_filename]), @user_choices[:output].to_sym)
-
-    if @user_choices[:output_filename] == '-'
-      puts result
-    else
-      @user_choices[:output_filename]
-
-      unless File.writable?(File.dirname(@user_choices[:output_filename]))
-        warn "Output file access denied (#{@user_choices[:output_filename]})"; exit false
-      end
-      
-      File.open(@user_choices[:output_filename], 'w') {|f| f.write(result)}
-    end
-  end
+  exit false
 end
-
-S4tUtils.with_pleasant_exceptions {Aef::Linebreak::Application.new.execute}

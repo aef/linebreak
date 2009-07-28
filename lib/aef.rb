@@ -15,4 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'lib/aef/linebreak/linebreak' rescue LoadError require 'aef/linebreak/linebreak'
+# Namespace for projects of Alexander E. Fischer <aef@raxys.net>
+#
+# If you want to be able to simply type Example instead of Aef::Example to
+# address classes in this namespace simply write the following before using the
+# classes:
+#
+#  include Aef
+module Aef
+
+end

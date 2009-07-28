@@ -329,57 +329,60 @@ describe Aef::Linebreak do
   end
 
   context 'commandline tool' do
-    it 'should use unix as default format' do
-      `#{executable_path} #{fixture_path('windows.txt')}`.should eql(unix_fixture + "\n")
-    end
-
-    it 'should accept -o option to specify output format' do
-      `#{executable_path} -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
-    end
-
-    it 'should also accept --output option to specify output format' do
-      `#{executable_path} --output windows #{fixture_path('mac.txt')}`.should eql(windows_fixture + "\n")
-    end
-
-    it 'should abort on invalid output formats' do
-      Open3.popen3("#{executable_path} -o fnord #{fixture_path('mac.txt')}") do |stdin, stdout, stderr|
-        stdout.read.should be_empty
-        stderr.read.should_not be_empty
+    describe '"encode" command' do
+      it 'should use unix as default format' do
+        `#{executable_path} encode #{fixture_path('windows.txt')}`.should eql(unix_fixture + "\n")
       end
-    end
 
-    it 'should accept LINEBREAK_OUTPUT environment variable to specify output format' do
-      if windows?
-        `set LINEBREAK_OUTPUT=mac`
-        `#{executable_path} --output mac #{fixture_path('windows.txt')}`.should eql(mac_fixture + "\n")
-      else
-        `env LINEBREAK_OUTPUT=mac #{executable_path} --output mac #{fixture_path('windows.txt')}`.should eql(mac_fixture + "\n")
+      it 'should accept -o option to specify output format' do
+        `#{executable_path} encode -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
       end
-    end
 
-    it 'should use output format specified with -o even if LINEBREAK_OUTPUT environment variable is set' do
-      if windows?
-        `set LINEBREAK_OUTPUT=windows`
-        `#{executable_path} -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
-      else
-        `env LINEBREAK_OUTPUT=windows #{executable_path} -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
+      it 'should also accept --output option to specify output format' do
+        `#{executable_path} encode --output windows #{fixture_path('mac.txt')}`.should eql(windows_fixture + "\n")
       end
-    end
 
-    it 'should use a second argument as target file' do
-      temp_file = Tempfile.open('linebreak_spec')
-      location = temp_file.path
-      temp_file.close
-      temp_file.unlink
+      it 'should abort on invalid output formats' do
+        Open3.popen3("#{executable_path} encode -o fnord #{fixture_path('mac.txt')}") do |stdin, stdout, stderr|
+          stdout.read.should be_empty
+          stderr.read.should_not be_empty
+        end
+      end
 
-      `#{executable_path} --output windows #{fixture_path('unix.txt')} #{location}`.should be_empty
+      it 'should accept LINEBREAK_OUTPUT environment variable to specify output format' do
+        if windows?
+          `set LINEBREAK_OUTPUT=mac`
+          `#{executable_path} encode --output mac #{fixture_path('windows.txt')}`.should eql(mac_fixture + "\n")
+        else
+          `env LINEBREAK_OUTPUT=mac #{executable_path} encode --output mac #{fixture_path('windows.txt')}`.should eql(mac_fixture + "\n")
+        end
+      end
 
-      File.read(location).should eql(windows_fixture)
-      File.unlink(location)
-    end
+      it 'should use output format specified with -o even if LINEBREAK_OUTPUT environment variable is set' do
+        if windows?
+          `set LINEBREAK_OUTPUT=windows`
+          `#{executable_path} encode -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
+        else
+          `env LINEBREAK_OUTPUT=windows #{executable_path} encode -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
+        end
+      end
 
-    it 'should display correct version and licensing information with the --version switch' do
-      message = <<-EOS
+      it 'should use a second argument as target file' do
+        temp_file = Tempfile.open('linebreak_spec')
+        location = temp_file.path
+        temp_file.close
+        temp_file.unlink
+
+        `#{executable_path} encode --output windows #{fixture_path('unix.txt')} #{location}`.should be_empty
+
+        File.read(location).should eql(windows_fixture)
+        File.unlink(location)
+      end
+
+      it 'should display correct version and licensing information with the --version switch' do
+        message = <<-EOS
+Usage: bin/linebreak {encodings|encode}
+
 Linebreak #{Aef::Linebreak::VERSION}
 
 Project: https://rubyforge.org/projects/aef/
@@ -400,9 +403,10 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-      EOS
-      
-      `#{executable_path} --version`.should eql(message)
+        EOS
+
+        `#{executable_path}`.should eql(message)
+      end
     end
   end
 end
