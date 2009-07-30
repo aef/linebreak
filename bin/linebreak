@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'pathname'
 require 'rubygems'
 
 # User friendly message if user-choices is not available
@@ -27,32 +26,41 @@ rescue LoadError
   warn "This command needs the user-choices gem to be installed.\n\nSolution: gem install user-choices"; exit false
 end
 
-commands_available = %w{encodings encode}
+require 'lib/aef/linebreak/pathname_conversion' rescue LoadError require 'aef/linebreak/pathname_conversion'
 
-require 'lib/aef/linebreak/commands/encode' rescue LoadError require 'aef/linebreak/commands/encode'
+commands_available = {
+  :encode => 'Convert all linebreak encodings of a file',
+  :version => 'More information about this program',
+  :'--version' => :version,
+  :'-v' => :version,
+  :'-V' => :version
+}
 
-command_name = ARGV.shift
+command_name = ARGV.shift.to_sym
 
-case command_name
-when Regexp.new(commands_available.join('|'))
-  command = Aef::Linebreak.const_get("#{command_name.capitalize}Command").new
-  S4tUtils.with_pleasant_exceptions {command.execute}
-else
-  name = 'Linebreak'
-  puts "Usage: #$PROGRAM_NAME {#{commands_available.join('|')}}"
+if commands_available[command_name].nil?
+  puts "Usage: #$PROGRAM_NAME COMMAND"
   puts
-  puts "#{name} #{Aef::Linebreak::VERSION}"
+  puts 'Available commands:'
   puts
-  puts 'Project: https://rubyforge.org/projects/aef/'
-  puts "RDoc: http://aef.rubyforge.org/#{name.downcase}/"
-  puts "Github: http://github.com/aef/#{name.downcase}/"
-  puts
-  puts 'Copyright 2009 Alexander E. Fischer <aef@raxys.net>'
-  # Read and print licensing information from the top of this file
-  if Gem::Version.new(RUBY_VERSION) <= Gem::Version.new('1.8.6')
-    puts File.read(__FILE__).map{|line| line[2..-1]}[5..17]
-  else
-    puts File.read(__FILE__).lines.map{|line| line[2..-1]}[5..17]
+  padding = commands_available.keys.map{|symbol| symbol.to_s}.max{|a,b| a.size <=> b.size}.size
+  commands_available.each do |command_name, description|
+    unless description.is_a?(Symbol)
+      printf "%-#{padding}s\t%s\n", command_name, description
+    end
   end
   exit false
+else
+  if commands_available[command_name].is_a?(Symbol)
+    command_name = commands_available[command_name]
+  end
+
+  begin
+    require "lib/aef/linebreak/commands/#{command_name}"
+  rescue LoadError
+    require "aef/linebreak/commands/#{command_name}"
+  end
+
+  command = Aef::Linebreak.const_get("#{command_name.to_s.capitalize}Command").new
+  S4tUtils.with_pleasant_exceptions {command.execute}
 end

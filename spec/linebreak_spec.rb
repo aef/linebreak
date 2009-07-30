@@ -17,7 +17,6 @@
 
 require 'tempfile'
 require 'rbconfig'
-require 'open3'
 require 'rubygems'
 
 require 'lib/aef/linebreak/string_extension'
@@ -73,9 +72,55 @@ module LinebreakSpecHelper
   def unix_windows_mac_fixture
     unix_fixture + windows_fixture + mac_fixture
   end
+
+  def version_message
+    <<-EOS
+Linebreak #{Aef::Linebreak::VERSION}
+
+Project: https://rubyforge.org/projects/aef/
+RDoc: http://aef.rubyforge.org/linebreak/
+Github: http://github.com/aef/linebreak/
+
+Copyright 2009 Alexander E. Fischer <aef@raxys.net>
+
+Linebreak is free software: you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.
+    EOS
+  end
+
+  def env(environment = {})
+    raise ArgumentError, 'A block needs to be given' unless block_given?
+
+    backup = {}
+
+    environment.each do |key, value|
+      key, value = key.to_s, value.to_s
+
+      backup[key] = ENV[key]
+      ENV[key] = value
+    end
+
+    result = yield
+
+    backup.each do |key, value|
+      ENV[key] = value
+    end
+
+    result
+  end
 end
 
-if Gem::Version.new(RUBY_VERSION) <= Gem::Version.new('1.8.6')
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('1.8.7')
   warn %{\nThe 16 specs of the "encodings" methods fail on 1.8.6 and } +
        'below because of invalid hash comparison which affects ' +
        'comparison of the result Sets. This should not be a big problem.'
@@ -329,83 +374,72 @@ describe Aef::Linebreak do
   end
 
   context 'commandline tool' do
+    describe '"version" command' do
+      it 'should display correct version and licensing information with the version argument' do
+        `#{executable_path} version`.should eql(version_message)
+      end
+
+      it 'should display correct version and licensing information with the --version argument' do
+        `#{executable_path} --version`.should eql(version_message)
+      end
+
+      it 'should display correct version and licensing information with the -v argument' do
+        `#{executable_path} -v`.should eql(version_message)
+      end
+
+      it 'should display correct version and licensing information with the -V argument' do
+        `#{executable_path} -V`.should eql(version_message)
+      end
+    end
+
     describe '"encode" command' do
       it 'should use unix as default format' do
-        `#{executable_path} encode #{fixture_path('windows.txt')}`.should eql(unix_fixture + "\n")
+        `#{executable_path} encode #{fixture_path('windows.txt')}`.should eql(unix_fixture)
       end
 
-      it 'should accept -o option to specify output format' do
-        `#{executable_path} encode -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
+      it 'should accept -s option to specify output format' do
+        `#{executable_path} encode -s mac #{fixture_path('unix.txt')}`.should eql(mac_fixture)
       end
 
-      it 'should also accept --output option to specify output format' do
-        `#{executable_path} encode --output windows #{fixture_path('mac.txt')}`.should eql(windows_fixture + "\n")
+      it 'should also accept --system option to specify output format' do
+        `#{executable_path} encode --system windows #{fixture_path('mac.txt')}`.should eql(windows_fixture)
       end
 
       it 'should abort on invalid output formats' do
-        Open3.popen3("#{executable_path} encode -o fnord #{fixture_path('mac.txt')}") do |stdin, stdout, stderr|
+        if windows?
+          require 'win32/open3'
+        else
+          require 'open3'
+        end
+
+        Open3.popen3("#{executable_path} encode -s fnord #{fixture_path('mac.txt')}") do |stdin, stdout, stderr|
           stdout.read.should be_empty
           stderr.read.should_not be_empty
         end
       end
 
-      it 'should accept LINEBREAK_OUTPUT environment variable to specify output format' do
-        if windows?
-          `set LINEBREAK_OUTPUT=mac`
-          `#{executable_path} encode --output mac #{fixture_path('windows.txt')}`.should eql(mac_fixture + "\n")
-        else
-          `env LINEBREAK_OUTPUT=mac #{executable_path} encode --output mac #{fixture_path('windows.txt')}`.should eql(mac_fixture + "\n")
+      it 'should accept LINEBREAK_SYSTEM environment variable to specify output format' do
+        env(:LINEBREAK_SYSTEM => 'mac') do
+          `#{executable_path} encode #{fixture_path('windows.txt')}`.should eql(mac_fixture)
         end
       end
 
-      it 'should use output format specified with -o even if LINEBREAK_OUTPUT environment variable is set' do
-        if windows?
-          `set LINEBREAK_OUTPUT=windows`
-          `#{executable_path} encode -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
-        else
-          `env LINEBREAK_OUTPUT=windows #{executable_path} encode -o mac #{fixture_path('unix.txt')}`.should eql(mac_fixture + "\n")
+      it 'should use output format specified with -s even if LINEBREAK_SYSTEM environment variable is set' do
+        env(:LINEBREAK_SYSTEM => 'windows') do
+          `#{executable_path} encode -s mac #{fixture_path('unix.txt')}`.should eql(mac_fixture)
         end
       end
 
       it 'should use a second argument as target file' do
         temp_file = Tempfile.open('linebreak_spec')
-        location = temp_file.path
+        location = Pathname(temp_file.path)
         temp_file.close
-        temp_file.unlink
+        location.delete
 
-        `#{executable_path} encode --output windows #{fixture_path('unix.txt')} #{location}`.should be_empty
+        `#{executable_path} encode --system windows #{fixture_path('unix.txt')} #{location}`.should be_empty
 
-        File.read(location).should eql(windows_fixture)
-        File.unlink(location)
-      end
-
-      it 'should display correct version and licensing information with the --version switch' do
-        message = <<-EOS
-Usage: bin/linebreak {encodings|encode}
-
-Linebreak #{Aef::Linebreak::VERSION}
-
-Project: https://rubyforge.org/projects/aef/
-RDoc: http://aef.rubyforge.org/linebreak/
-Github: http://github.com/aef/linebreak/
-
-Copyright 2009 Alexander E. Fischer <aef@raxys.net>
-
-Linebreak is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-        EOS
-
-        `#{executable_path}`.should eql(message)
+        location.read.should eql(windows_fixture)
+        location.delete
       end
     end
   end
