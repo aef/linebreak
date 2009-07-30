@@ -27,7 +27,7 @@ class Aef::Linebreak::EncodeCommand < UserChoices::Command
     builder.add_source(
       CommandLineSource, :usage,
       "Usage: #$PROGRAM_NAME encode [OPTIONS] [INPUT] [OUTPUT]\n\n",
-      "Convert a file with any linebreak encoding to a specific linebreak encoding.\n",
+      "Convert all linebreak encodings of a file.\n",
       "Use the environment variable LINEBREAK_SYSTEM to specify a default output encoding.\n"
     )
 
@@ -44,19 +44,19 @@ class Aef::Linebreak::EncodeCommand < UserChoices::Command
         "Output encoding system. Possible settings: #{Aef::Linebreak::BREAK_BY_SYSTEM.keys.join(', ')}")
     end
 
-    builder.add_choice(:filenames, :length => 0..2, :type => :pathname) {|cli| cli.uses_arglist}
+    builder.add_choice(:files, :length => 0..2, :type => :pathname) {|cli| cli.uses_arglist}
   end
 
   # Manual option post processing
   def postprocess_user_choices
-    if @user_choices[:filenames][0] and @user_choices[:filenames][0] != Pathname('-')
-      @user_choices[:input] = @user_choices[:filenames][0].open('r')
+    if @user_choices[:files][0] and @user_choices[:files][0] != Pathname('-')
+      @user_choices[:input] = @user_choices[:files][0].open('r')
     else
       @user_choices[:input] = STDIN
     end
 
-    if @user_choices[:filenames][1] and @user_choices[:filenames][1] != Pathname('-')
-      @user_choices[:output] = @user_choices[:filenames][1].open('w')
+    if @user_choices[:files][1] and @user_choices[:files][1] != Pathname('-')
+      @user_choices[:output] = @user_choices[:files][1].open('w')
     else
       @user_choices[:output] = STDOUT
     end
