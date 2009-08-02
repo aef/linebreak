@@ -30,13 +30,15 @@ require 'lib/aef/linebreak/pathname_conversion' rescue LoadError require 'aef/li
 
 commands_available = {
   :encode => 'Convert all linebreak encodings of a file',
+  :encodings => 'Detect linebreak encoding systems of a file',
   :version => 'More information about this program',
   :'--version' => :version,
   :'-v' => :version,
   :'-V' => :version
 }
 
-command_name = ARGV.shift.to_sym
+command_name = ARGV.shift
+command_name = command_name.to_sym if command_name
 
 if commands_available[command_name].nil?
   puts "Usage: #$PROGRAM_NAME COMMAND"

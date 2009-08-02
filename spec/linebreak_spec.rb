@@ -2,22 +2,23 @@
 #
 # This file is part of Linebreak.
 #
-# Linebreak is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Linebreak is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'tempfile'
 require 'rbconfig'
 require 'rubygems'
+require 'popen4'
 
 require 'lib/aef/linebreak/string_extension'
 
@@ -122,8 +123,8 @@ end
 
 if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('1.8.7')
   warn %{\nThe 16 specs of the "encodings" methods fail on 1.8.6 and } +
-       'below because of invalid hash comparison which affects ' +
-       'comparison of the result Sets. This should not be a big problem.'
+    'below because of invalid hash comparison which affects ' +
+    'comparison of the result Sets. This should not be a big problem.'
 end
 
 describe Aef::Linebreak do
@@ -406,13 +407,7 @@ describe Aef::Linebreak do
       end
 
       it 'should abort on invalid output formats' do
-        if windows?
-          require 'win32/open3'
-        else
-          require 'open3'
-        end
-
-        Open3.popen3("#{executable_path} encode -s fnord #{fixture_path('mac.txt')}") do |stdin, stdout, stderr|
+        POpen4.popen4("#{executable_path} encode -s fnord #{fixture_path('mac.txt')}") do |stdout, stderr, stdin, pid|
           stdout.read.should be_empty
           stderr.read.should_not be_empty
         end
@@ -440,6 +435,53 @@ describe Aef::Linebreak do
 
         location.read.should eql(windows_fixture)
         location.delete
+      end
+    end
+
+    describe '"encodings" command' do
+      it "should correctly detect the linebreak encodings of a file" do
+        POpen4.popen4("#{executable_path} encodings #{fixture_path('mac.txt')}") do |stdout, stderr, stdin, pid|
+          stdout.read.should eql("#{fixture_path('mac.txt')}: mac\n")
+        end.exitstatus.should eql(0)
+      end
+
+      it "should correctly detect the linebreak encodings of multiple files" do
+        files = %w{unix_windows.txt windows_mac.txt mac_unix.txt unix_windows_mac.txt}
+        files = files.map{|file| fixture_path(file)}
+
+        output = `#{executable_path} encodings #{files.join(' ')}`
+        output.should include("#{files[0]}: unix,windows\n")
+        output.should include("#{files[1]}: windows,mac\n")
+        output.should include("#{files[2]}: unix,mac\n")
+        output.should include("#{files[3]}: unix,windows,mac\n")
+
+        # Return status should be 0
+      end
+
+      it "should correctly ensure the linebreak encodings of a valid file" do
+        `#{executable_path} encodings --ensure unix #{fixture_path('unix.txt')}`.should eql("#{fixture_path('unix.txt')}: unix\n")
+        
+        # Return status should be 0
+      end
+
+      it "should correctly ensure the linebreak encodings of an invalid file" do
+        `#{executable_path} encodings --ensure mac #{fixture_path('unix_windows.txt')}`.should eql("#{fixture_path('unix_windows.txt')}: unix,windows (failed)\n")
+
+        # Return status should be 1
+      end
+
+      it "should correctly ensure the linebreak encodings of multiple files" do
+        files = %w{unix_windows.txt windows_mac.txt mac_unix.txt unix_windows_mac.txt}
+        files = files.map{|file| fixture_path(file)}
+
+        output = `#{executable_path} encodings --ensure windows,unix #{files.join(' ')}`
+        output.should include("#{files[0]}: unix,windows\n")
+        output.should_not include("#{files[0]}: unix,windows (failed)\n")
+        output.should include("#{files[1]}: windows,mac (failed)\n")
+        output.should include("#{files[2]}: unix,mac (failed)\n")
+        output.should include("#{files[3]}: unix,windows,mac (failed)\n")
+
+        # Return status should be 1
       end
     end
   end
