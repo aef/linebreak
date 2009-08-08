@@ -38,10 +38,10 @@ class Aef::Linebreak::EncodeCommand < UserChoices::Command
 
   # Define configuration options
   def add_choices(builder)
-    output_values = Aef::Linebreak::BREAK_BY_SYSTEM.keys.map{|key| key.to_s}
-    builder.add_choice(:system, :default => 'unix', :type => output_values) do |cli|
+    systems = Aef::Linebreak::BREAK_BY_SYSTEM.keys.map{|key| key.to_s}
+    builder.add_choice(:system, :default => 'unix', :type => systems) do |cli|
       cli.uses_option('-s', '--system SYSTEM',
-        "Output encoding system. Possible settings: #{Aef::Linebreak::BREAK_BY_SYSTEM.keys.join(', ')}")
+        "Output encoding system. Possible settings: #{systems.join(', ')}")
     end
 
     builder.add_choice(:files, :length => 0..2, :type => :pathname) {|cli| cli.uses_arglist}
