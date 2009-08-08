@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'hoe'
 
-Hoe.spec('aef-linebreak') do
+Hoe.spec('linebreak') do
   developer('Alexander E. Fischer', 'aef@raxys.net')
 
   self.rubyforge_name = 'aef'
