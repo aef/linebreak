@@ -127,6 +127,12 @@ if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('1.8.7')
     'comparison of the result Sets. This should not be a big problem.'
 end
 
+if RUBY_PLATFORM == 'java'
+  warn %{\nAll 6 specs of the "encodings" command fail because JRuby does } +
+    'not support the fork method. This should only affect the specs, the ' +
+    'commandline tool should still work fine.'
+end
+
 describe Aef::Linebreak do
   include LinebreakSpecHelper
 
@@ -221,7 +227,7 @@ describe Aef::Linebreak do
             systems << system.to_sym
           end
 
-          it "should respond correctly for #{expected_systems.join(' and ')} encoding" do
+          it "should correctly ensure #{expected_systems.join(' and ')} encoding (input: #{fixture_systems.to_s.split('_').join(' and ')})" do
             fixture = send "#{fixture_systems}_fixture"
 
             result = Aef::Linebreak.encoding?(fixture, expected_systems)
@@ -234,7 +240,7 @@ describe Aef::Linebreak do
           end
 
           if expected_systems.size > 1
-            it "should respond correctly for #{expected_systems.join(' and ')} encoding (using argument list)" do
+            it "should correctly ensure #{expected_systems.join(' and ')} encoding (input: #{fixture_systems.to_s.split('_').join(' and ')}; using argument list)" do
               fixture = send "#{fixture_systems}_fixture"
 
               result = Aef::Linebreak.encoding?(fixture, *expected_systems)
@@ -253,7 +259,7 @@ describe Aef::Linebreak do
   end
 
   context 'string extension' do
-    describe 'method "encode"' do
+    describe 'method "linebreak_encode"' do
       it 'should correctly work from unix to windows format' do
         unix_fixture.linebreak_encode(:windows).should eql(windows_fixture)
       end
@@ -291,7 +297,7 @@ describe Aef::Linebreak do
       end
     end
 
-    describe 'method "encodings"' do
+    describe 'method "linebreak_encodings"' do
       it 'should detect unix format' do
         unix_fixture.linebreak_encodings.should eql([:unix].to_set)
       end
@@ -325,7 +331,7 @@ describe Aef::Linebreak do
       end
     end
 
-    describe 'method "encoding?"' do
+    describe 'method "linebreak_encoding?"' do
       system_combinations = [
         :unix,
         :windows,
@@ -343,7 +349,7 @@ describe Aef::Linebreak do
             systems << system.to_sym
           end
 
-          it "should respond correctly for #{expected_systems.join(' and ')} encoding" do
+          it "should correctly ensure #{expected_systems.join(' and ')} encoding (input: #{fixture_systems.to_s.split('_').join(' and ')})" do
             fixture = send "#{fixture_systems}_fixture"
 
             result = fixture.linebreak_encoding?(expected_systems)
@@ -356,7 +362,7 @@ describe Aef::Linebreak do
           end
 
           if expected_systems.size > 1
-            it "should respond correctly for #{expected_systems.join(' and ')} encoding (using argument list)" do
+            it "should correctly ensure #{expected_systems.join(' and ')} encoding (input: #{fixture_systems.to_s.split('_').join(' and ')}; using argument list)" do
               fixture = send "#{fixture_systems}_fixture"
 
               result = fixture.linebreak_encoding?(*expected_systems)
@@ -449,39 +455,41 @@ describe Aef::Linebreak do
         files = %w{unix_windows.txt windows_mac.txt mac_unix.txt unix_windows_mac.txt}
         files = files.map{|file| fixture_path(file)}
 
-        output = `#{executable_path} encodings #{files.join(' ')}`
-        output.should include("#{files[0]}: unix,windows\n")
-        output.should include("#{files[1]}: windows,mac\n")
-        output.should include("#{files[2]}: unix,mac\n")
-        output.should include("#{files[3]}: unix,windows,mac\n")
-
-        # Return status should be 0
+        POpen4.popen4("#{executable_path} encodings #{files.join(' ')}") do |stdout, stderr, stdin, pid|
+          output = stdout.read
+          output.should include("#{files[0]}: unix,windows\n")
+          output.should include("#{files[1]}: windows,mac\n")
+          output.should include("#{files[2]}: unix,mac\n")
+          output.should include("#{files[3]}: unix,windows,mac\n")
+        end.exitstatus.should eql(0)
       end
 
       it "should correctly ensure the linebreak encodings of a valid file" do
-        `#{executable_path} encodings --ensure unix #{fixture_path('unix.txt')}`.should eql("#{fixture_path('unix.txt')}: unix\n")
-        
-        # Return status should be 0
+        POpen4.popen4("#{executable_path} encodings --ensure unix #{fixture_path('unix.txt')}") do |stdout, stderr, stdin, pid|
+          output = stdout.read
+          output.should eql("#{fixture_path('unix.txt')}: unix\n")
+        end.exitstatus.should eql(0)
       end
 
       it "should correctly ensure the linebreak encodings of an invalid file" do
-        `#{executable_path} encodings --ensure mac #{fixture_path('unix_windows.txt')}`.should eql("#{fixture_path('unix_windows.txt')}: unix,windows (failed)\n")
-
-        # Return status should be 1
+        POpen4.popen4("#{executable_path} encodings --ensure mac #{fixture_path('unix_windows.txt')}") do |stdout, stderr, stdin, pid|
+          output = stdout.read
+          output.should eql("#{fixture_path('unix_windows.txt')}: unix,windows (failed)\n")
+        end.exitstatus.should eql(1)
       end
 
       it "should correctly ensure the linebreak encodings of multiple files" do
         files = %w{unix_windows.txt windows_mac.txt mac_unix.txt unix_windows_mac.txt}
         files = files.map{|file| fixture_path(file)}
 
-        output = `#{executable_path} encodings --ensure windows,unix #{files.join(' ')}`
-        output.should include("#{files[0]}: unix,windows\n")
-        output.should_not include("#{files[0]}: unix,windows (failed)\n")
-        output.should include("#{files[1]}: windows,mac (failed)\n")
-        output.should include("#{files[2]}: unix,mac (failed)\n")
-        output.should include("#{files[3]}: unix,windows,mac (failed)\n")
-
-        # Return status should be 1
+        POpen4.popen4("#{executable_path} encodings --ensure windows,unix #{files.join(' ')}") do |stdout, stderr, stdin, pid|
+          output = stdout.read
+          output.should include("#{files[0]}: unix,windows\n")
+          output.should_not include("#{files[0]}: unix,windows (failed)\n")
+          output.should include("#{files[1]}: windows,mac (failed)\n")
+          output.should include("#{files[2]}: unix,mac (failed)\n")
+          output.should include("#{files[3]}: unix,windows,mac (failed)\n")
+        end.exitstatus.should eql(1)
       end
     end
   end
