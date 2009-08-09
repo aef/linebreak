@@ -21,7 +21,7 @@ between linebreak encoding formats of unix, windows or mac.
   * Debian GNU/Linux 4.0 i386
     * Ruby 1.8.6
   * Windows XP i386
-    * Ruby 1.8.6
+    * Ruby 1.8.6 (tests fail completely because of problems with popen4)
 * The commandline tool does only work with a patched user-choices gem on Ruby
   1.9 or higher. See the INSTALL section for further instructions.
 
