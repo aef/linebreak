@@ -6,7 +6,7 @@ require 'hoe'
 Hoe.spec('linebreak') do
   developer('Alexander E. Fischer', 'aef@raxys.net')
 
-  self.rubyforge_name = 'aef'
+  self.rubyforge_name = 'linebreak'
   self.extra_dev_deps = %w{user-choices rspec popen4}
   self.url = 'https://rubyforge.org/projects/aef/'
   self.readme_file = 'README.rdoc'
