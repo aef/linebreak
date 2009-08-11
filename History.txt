@@ -1,4 +1,4 @@
-=== 1.3.0 /
+=== 1.3.0 / 2009-08-11
 
 * major enhancements
 
@@ -11,6 +11,7 @@
   * String extension now loadable via require
   * Most of the specifications now run on JRuby
   * Used the Pathname class where possible
+  * Upgraded to use the latest hoe gem
 
 === 1.2.0 / 2009-04-05
 
