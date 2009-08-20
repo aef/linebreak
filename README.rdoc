@@ -185,7 +185,7 @@ is no way to install the gem securely. Therefore this is not recommended.
 You can test this package through rspec on your system. First find the path
 where the gem was installed to:
 
-  gem which linebreak
+  gem which aef/linebreak
 
 Go into the root directory of the installed gem and run the following command
 to start the test runner:
