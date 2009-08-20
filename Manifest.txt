@@ -12,7 +12,9 @@ lib/aef/linebreak/commands/version.rb
 lib/aef/linebreak/pathname_conversion.rb
 lib/aef/linebreak/linebreak.rb
 lib/aef.rb
+spec/spec_helper.rb
 spec/linebreak_spec.rb
+spec/spec.opts
 spec/fixtures/unix.txt
 spec/fixtures/windows.txt
 spec/fixtures/mac.txt

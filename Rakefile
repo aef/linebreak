@@ -14,6 +14,7 @@ Hoe.spec('linebreak') do
   self.spec_extras = {
     :rdoc_options => ['--main', 'README.rdoc', '--inline-source', '--line-numbers', '--title', 'Linebreak']
   }
+  self.rspec_options = ['--options', 'spec/spec.opts']
 end
 
 # vim: syntax=Ruby
