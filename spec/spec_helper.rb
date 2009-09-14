@@ -20,14 +20,16 @@ require 'rbconfig'
 require 'rubygems'
 require 'popen4'
 
-require 'lib/aef/linebreak/string_extension'
+$LOAD_PATH.unshift('lib')
+
+require 'aef/linebreak/string_extension'
 
 module LinebreakSpecHelper
   INTERPRETER = Pathname(RbConfig::CONFIG['bindir']) + RbConfig::CONFIG['ruby_install_name']
   FIXTURES_DIR = Pathname('spec/fixtures')
 
   def executable_path
-    "#{INTERPRETER} bin/linebreak"
+    "#{INTERPRETER} -Ilib bin/linebreak"
   end
 
   def fixture_path(name)
@@ -78,8 +80,8 @@ module LinebreakSpecHelper
     <<-EOS
 Linebreak #{Aef::Linebreak::VERSION}
 
-Project: https://rubyforge.org/projects/aef/
-RDoc: http://aef.rubyforge.org/linebreak/
+Project: https://rubyforge.org/projects/linebreak/
+RDoc: http://linebreak.rubyforge.org/
 Github: http://github.com/aef/linebreak/
 
 Copyright 2009 Alexander E. Fischer <aef@raxys.net>

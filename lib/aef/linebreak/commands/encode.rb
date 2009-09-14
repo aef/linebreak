@@ -17,7 +17,7 @@
 
 # TODO: If user-choices patch gets accepted, use :upcase for environment variables
 
-require 'lib/aef/linebreak' rescue LoadError require 'aef/linebreak'
+require 'aef/linebreak/pathname_conversion'
 
 class Aef::Linebreak::EncodeCommand < UserChoices::Command
   include UserChoices

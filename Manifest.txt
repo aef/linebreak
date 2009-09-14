@@ -11,7 +11,6 @@ lib/aef/linebreak/commands/encodings.rb
 lib/aef/linebreak/commands/version.rb
 lib/aef/linebreak/pathname_conversion.rb
 lib/aef/linebreak/linebreak.rb
-lib/aef.rb
 spec/spec_helper.rb
 spec/linebreak_spec.rb
 spec/spec.opts

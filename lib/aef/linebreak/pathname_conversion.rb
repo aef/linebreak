@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # This class adds the type :pathname to user-choices
-class ConversionToPathname < UserChoices::Conversion
+class Aef::Linebreak::ConversionToPathname < UserChoices::Conversion
   def self.described_by?(conversion_tag)
     conversion_tag == :pathname
   end

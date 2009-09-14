@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'lib/aef/linebreak' rescue LoadError require 'aef/linebreak'
+require 'aef/linebreak/pathname_conversion'
 
 class Aef::Linebreak::EncodingsCommand < UserChoices::Command
   include UserChoices

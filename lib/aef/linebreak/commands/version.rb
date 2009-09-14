@@ -15,15 +15,15 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'lib/aef/linebreak' rescue LoadError require 'aef/linebreak'
+require 'aef/linebreak/pathname_conversion'
 
 class Aef::Linebreak::VersionCommand
   def execute
     name = 'Linebreak'
     puts "#{name} #{Aef::Linebreak::VERSION}"
     puts
-    puts 'Project: https://rubyforge.org/projects/aef/'
-    puts "RDoc: http://aef.rubyforge.org/#{name.downcase}/"
+    puts 'Project: https://rubyforge.org/projects/linebreak/'
+    puts "RDoc: http://#{name.downcase}.rubyforge.org/"
     puts "Github: http://github.com/aef/#{name.downcase}/"
     puts
     puts 'Copyright 2009 Alexander E. Fischer <aef@raxys.net>'

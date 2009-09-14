@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'rubygems'
+require 'aef/linebreak'
 
 # User friendly message if user-choices is not available
 begin
@@ -25,8 +26,6 @@ begin
 rescue LoadError
   warn "This command needs the user-choices gem to be installed.\n\nSolution: gem install user-choices"; exit false
 end
-
-require 'lib/aef/linebreak/pathname_conversion' rescue LoadError require 'aef/linebreak/pathname_conversion'
 
 commands_available = {
   :encode => 'Convert all linebreak encodings of a file',
@@ -55,12 +54,6 @@ if commands_available[command_name].nil?
 else
   if commands_available[command_name].is_a?(Symbol)
     command_name = commands_available[command_name]
-  end
-
-  begin
-    require "lib/aef/linebreak/commands/#{command_name}"
-  rescue LoadError
-    require "aef/linebreak/commands/#{command_name}"
   end
 
   command = Aef::Linebreak.const_get("#{command_name.to_s.capitalize}Command").new
