@@ -1,6 +1,7 @@
 = Linebreak
 
 * Project: https://rubyforge.org/projects/linebreak/
+* RDoc: http://rdoc.info/projects/aef/linebreak/
 * RDoc: http://linebreak.rubyforge.org/
 * Github: http://github.com/aef/linebreak/
 
