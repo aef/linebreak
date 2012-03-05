@@ -1,3 +1,12 @@
-pkg
+# Project metadata
+nbproject
+.idea
+
+Gemfile.lock
+
 doc
-nbproject/private
+coverage
+pkg
+.yardoc
+.rbx
+*.rbc
