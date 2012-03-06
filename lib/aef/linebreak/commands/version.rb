@@ -21,20 +21,18 @@ require 'aef/linebreak/pathname_conversion'
 
 class Aef::Linebreak::VersionCommand
   def execute
-    name = 'Linebreak'
-    puts "#{name} #{Aef::Linebreak::VERSION}"
-    puts
-    puts 'Project: https://rubyforge.org/projects/linebreak/'
-    puts "RDoc: http://#{name.downcase}.rubyforge.org/"
-    puts "Github: http://github.com/aef/#{name.downcase}/"
-    puts
-    puts 'Copyright 2009 Alexander E. Fischer <aef@raxys.net>'
-    # Read and print licensing information from the top of this file
-    if Gem::Version.new(RUBY_VERSION) <= Gem::Version.new('1.8.6')
-      puts File.read(__FILE__).map{|line| line[2..-1]}[3..15]
-    else
-      puts File.read(__FILE__).lines.map{|line| line[2..-1]}[3..15]
-    end
+    # Read licensing information from the top of this file
+    license = File.read(__FILE__)[/=begin\n(.*)\n=end/m, 1]
+
+    puts <<-TEXT
+Linebreak #{Aef::Linebreak::VERSION}
+
+Project: https://github.com/aef/linebreak/
+Documentation: http://rubydoc.info/aef/linebreak/
+
+#{license}
+    TEXT
+
     exit false
   end
 end

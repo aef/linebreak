@@ -17,46 +17,41 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 =end
 
+require File.expand_path('../lib/aef/linebreak/version', __FILE__)
+
 Gem::Specification.new do |s|
-  s.name = %q{linebreak}
-  s.version = "1.3.1"
+  s.name        = 'linebreak'
+  s.version     = Aef::Linebreak::VERSION.dup
+  s.authors     = ['Alexander E. Fischer']
+  s.email       = ['aef@raxys.net']
+  s.homepage    = 'http://github.com/aef/linebreak'
+  s.license     = 'ISC'
+  s.summary     = 'Easy linebreak system conversion'
+  s.description = <<-DESCRIPTION
+Linebreak is a Ruby library and commandline tool for conversion of text
+between linebreak encoding formats of unix, windows or mac.
+  DESCRIPTION
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Alexander E. Fischer"]
-  s.date = %q{2009-09-16}
-  s.default_executable = %q{linebreak}
-  s.description = %q{Linebreak is a Ruby library and commandline tool for conversion of text
-between linebreak encoding formats of unix, windows or mac.}
-  s.email = ["aef@raxys.net"]
-  s.executables = ["linebreak"]
-  s.extra_rdoc_files = ["History.txt", "Manifest.txt", "COPYING.txt", "README.rdoc"]
-  s.files = ["History.txt", "Manifest.txt", "README.rdoc", "COPYING.txt", "Rakefile", "bin/linebreak", "lib/aef/linebreak.rb", "lib/aef/linebreak/string_extension.rb", "lib/aef/linebreak/commands/encode.rb", "lib/aef/linebreak/commands/encodings.rb", "lib/aef/linebreak/commands/version.rb", "lib/aef/linebreak/pathname_conversion.rb", "lib/aef/linebreak/linebreak.rb", "spec/spec_helper.rb", "spec/linebreak_spec.rb", "spec/spec.opts", "spec/fixtures/unix.txt", "spec/fixtures/windows.txt", "spec/fixtures/mac.txt", "spec/fixtures/unix_windows.txt", "spec/fixtures/windows_mac.txt", "spec/fixtures/mac_unix.txt", "spec/fixtures/unix_windows_mac.txt"]
-  s.homepage = %q{https://rubyforge.org/projects/linebreak/}
-  s.rdoc_options = ["--main", "README.rdoc", "--inline-source", "--line-numbers", "--title", "Linebreak"]
+  s.rubyforge_project = nil
+  s.has_rdoc          = 'yard'
+  s.extra_rdoc_files  = ['HISTORY.md', 'LICENSE.md'] 
+
+  s.files         = `git ls-files`.lines.map(&:chomp)
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.lines.map(&:chomp)
+  s.executables   = `git ls-files -- bin/*`.lines.map{|f| File.basename(f.chomp) }
   s.require_paths = ["lib"]
-  s.rubyforge_project = %q{linebreak}
-  s.rubygems_version = %q{1.3.5}
-  s.summary = %q{Linebreak is a Ruby library and commandline tool for conversion of text between linebreak encoding formats of unix, windows or mac.}
 
-  if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 3
+  s.required_ruby_version = '>= 1.8.7'
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec>, [">= 1.2.8"])
-      s.add_development_dependency(%q<popen4>, [">= 0.1.2"])
-      s.add_development_dependency(%q<user-choices>, [">= 1.1.6"])
-      s.add_development_dependency(%q<hoe>, [">= 2.3.2"])
-    else
-      s.add_dependency(%q<rspec>, [">= 1.2.8"])
-      s.add_dependency(%q<popen4>, [">= 0.1.2"])
-      s.add_dependency(%q<user-choices>, [">= 1.1.6"])
-      s.add_dependency(%q<hoe>, [">= 2.3.2"])
-    end
-  else
-    s.add_dependency(%q<rspec>, [">= 1.2.8"])
-    s.add_dependency(%q<popen4>, [">= 0.1.2"])
-    s.add_dependency(%q<user-choices>, [">= 1.1.6"])
-    s.add_dependency(%q<hoe>, [">= 2.3.2"])
-  end
+  s.add_development_dependency('bundler', '~> 1.0.21')
+  s.add_development_dependency('rake', '~> 0.9.2')
+  s.add_development_dependency('rspec', '~> 2.6.0')
+  s.add_development_dependency('simplecov', '~> 0.5.4')
+  s.add_development_dependency('pry', '~> 0.9.8')
+  s.add_development_dependency('yard', '~> 0.7.5')
+  s.add_development_dependency('maruku', '~> 0.6.0')
+  s.add_development_dependency('popen4', '~> 0.1.2')
+
+  s.cert_chain = "#{ENV['GEM_CERT_CHAIN']}".split(':')
+  s.signing_key = ENV['GEM_SIGNING_KEY']
 end

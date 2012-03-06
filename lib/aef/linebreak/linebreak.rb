@@ -33,8 +33,6 @@ module Aef::Linebreak
   autoload :EncodingsCommand,     'aef/linebreak/commands/encodings'
   autoload :VersionCommand,       'aef/linebreak/commands/version'
 
-  VERSION = '1.3.1'
-  
   BREAK_BY_SYSTEM = {
     :unix => "\n",
     :windows => "\r\n",
@@ -124,3 +122,5 @@ module Aef::Linebreak
     Aef::Linebreak.encode(self, system_or_replacement)
   end
 end
+
+require 'aef/linebreak/version'

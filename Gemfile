@@ -17,31 +17,7 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 =end
 
-require 'rake'
-require 'pathname'
-require 'bundler/gem_tasks'
-require 'yard'
-require 'rspec/core/rake_task'
+source 'http://rubygems.org'
 
-RSpec::Core::RakeTask.new
-
-YARD::Rake::YardocTask.new('doc')
-
-desc "Removes temporary project files"
-task :clean do
-  %w{doc coverage pkg .yardoc .rbx Gemfile.lock}.map{|name| Pathname.new(name) }.each do |path|
-    path.rmtree if path.exist?
-  end
-
-  Pathname.glob('*.gem').each &:delete
-  Pathname.glob('**/*.rbc').each &:delete
-end
-
-desc "Opens an interactive console with the library loaded"
-task :console do
-  require 'pry'
-  require 'linebreak'
-  Pry.start
-end
-
-task :default => :spec
+# Specify your gem's dependencies in weekling.gemspec
+gemspec

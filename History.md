@@ -1,4 +1,16 @@
-=== 1.3.1 / 2009-09-14
+2.0.0 / 2012-??-??
+==================
+
+* 1 major enhancement
+
+  * Changed to ISC based license
+
+* 1 minor enhancement
+
+  * Slightly restructured project
+
+1.3.1 / 2009-09-14
+==================
 
 * 1 major bugfix
 
@@ -8,7 +20,8 @@
 
   * Implemented autoloading
 
-=== 1.3.0 / 2009-08-11
+1.3.0 / 2009-08-11
+==================
 
 * 3 major enhancements
 
@@ -23,7 +36,8 @@
   * Used the Pathname class where possible
   * Upgraded to use the latest hoe gem
 
-=== 1.2.0 / 2009-04-05
+1.2.0 / 2009-04-05
+==================
 
 * 2 major enhancements
 
@@ -42,7 +56,8 @@
 
   * Fixed some bugs related to Ruby 1.8.6
 
-=== 1.1.1 / 2009-03-08
+1.1.1 / 2009-03-08
+==================
 
 * minor enhancement
 
@@ -50,7 +65,8 @@
   * Some test refactoring
   * Some more comments
 
-=== 1.1.0 / 2009-03-01
+1.1.0 / 2009-03-01
+==================
 
 * 2 major enhancements
 
@@ -61,7 +77,8 @@
 
   * Added support for custom string linebreak encodings in library
 
-=== 1.0.1 / 2009-02-24
+1.0.1 / 2009-02-24
+==================
 
 * 1 minor enhancement
 
@@ -71,7 +88,8 @@
 
   * Bugfixes for commandline use
 
-=== 1.0.0 / 2009-02-24
+1.0.0 / 2009-02-24
+==================
 
 * 1 major enhancement
 

@@ -1,28 +1,27 @@
-# Copyright 2009 Alexander E. Fischer <aef@raxys.net>
-#
-# This file is part of Linebreak.
-#
-# Linebreak is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# encoding: UTF-8
+=begin
+Copyright Alexander E. Fischer <aef@raxys.net>, 2009-2012
 
+This file is part of Linebreak.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+=end
+
+require 'rspec'
 require 'tempfile'
 require 'rbconfig'
-require 'rubygems'
 require 'popen4'
-
-$LOAD_PATH.unshift('lib')
-
-require 'aef/linebreak/string_extension'
+require 'linebreak'
 
 module LinebreakSpecHelper
   INTERPRETER = Pathname(RbConfig::CONFIG['bindir']) + RbConfig::CONFIG['ruby_install_name']
@@ -80,24 +79,24 @@ module LinebreakSpecHelper
     <<-EOS
 Linebreak #{Aef::Linebreak::VERSION}
 
-Project: https://rubyforge.org/projects/linebreak/
-RDoc: http://linebreak.rubyforge.org/
-Github: http://github.com/aef/linebreak/
+Project: https://github.com/aef/linebreak/
+Documentation: http://rubydoc.info/aef/linebreak/
 
-Copyright 2009 Alexander E. Fischer <aef@raxys.net>
+Copyright Alexander E. Fischer <aef@raxys.net>, 2009-2012
 
-Linebreak is free software: you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
+This file is part of Linebreak.
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-details.
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
 
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <http://www.gnu.org/licenses/>.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
     EOS
   end
 
@@ -123,7 +122,7 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
   end
 end
 
-if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('1.8.7')
+if Gem::Version.new(RUBY_VERSION.dup) < Gem::Version.new('1.8.7')
   warn %{\nThe 16 specs of the "encodings" methods fail on 1.8.6 and } +
     'below because of invalid hash comparison which affects ' +
     'comparison of the result Sets. This should not be a big problem.'
@@ -135,6 +134,6 @@ if RUBY_PLATFORM == 'java'
     'commandline tool should still work fine.'
 end
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.include LinebreakSpecHelper
 end

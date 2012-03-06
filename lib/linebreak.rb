@@ -19,6 +19,4 @@ PERFORMANCE OF THIS SOFTWARE.
 
 require 'aef/linebreak'
 
-String.call(:include, Aef::Linebreak)
-
-::Linebreak = Aef::Linebreak unless defined?(::Linebreak)
+String.send(:include, Aef::Linebreak)
