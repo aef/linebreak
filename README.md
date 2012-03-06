@@ -8,14 +8,15 @@ https://secure.travis-ci.org/aef/linebreak)
 * [Project][2]
 
    [1]: http://rdoc.info/projects/aef/linebreak/
-   [2]: http://github.com/aef/linebreak/
+   [2]: https://github.com/aef/linebreak/
 
 Description
 -----------
 
-Linebreak is a Ruby library and commandline tool for conversion of text
-between linebreak encoding formats of unix, windows or mac.
+Linebreak is a Ruby library for conversion of text between linebreak encoding
+formats of unix, windows or mac.
 
+A command-line tool is available as separate gem named linebreak-cli.
 Earlier versions of Linebreak were called BreakVerter.
 
 Features / Problems
@@ -37,6 +38,8 @@ Additional facts:
 
 * Written purely in Ruby.
 * Intended to be used with Ruby 1.8.7 or higher.
+* Extends core classes. This can be disabled through bare mode.
+* Cryptographically signed gem and git tags
 
 Synopsis
 --------
@@ -59,105 +62,89 @@ In a bundler Gemfile you should use the following:
 gem 'linebreak'
 ~~~~~
 
+By default, Linebreak extends the String class to make all Strings support the
+linebreak helper methods. The decision to modify Ruby's core classes should be
+in the hand of the end user (e.g. the application developer). So if you don't
+want the core extensions to be loaded or if you are using this library as a
+component in another library you should load this library in bare mode: 
+
+~~~~~ ruby
+require 'linebreak/bare'
+~~~~~
+
+Or for bundler Gemfiles:
+
+~~~~~ ruby
+gem 'linebreak', require: 'linebreak/bare'
+~~~~~
+
 ### Library
 
-You can put strings or objects responding to to_s into the method and
-optionally define a target linebreak encoding. The default encoding is :unix.
-You can also choose :mac and :windows. Notice that the :mac encoding is
+You can convert Strings to a target linebreak encoding. The default encoding is
+:unix. You can also choose :mac and :windows. Notice that the :mac encoding is
 deprecated. Modern Apple machines also use :unix linebreak encoding, while
 Commodore machines also use the :mac linebreak encoding.
 
 ~~~~~ ruby
 windows_string = "Abcdef\r\nAbcdef\r\nAbcdef"
 
-Aef::Linebreak.encode(windows_string, :unix)
+windows_string.linebreak_encode(:unix)
 #=> "Abcdef\nAbcdef\nAbcdef"
 ~~~~~
 
-You can detect which decoding systems are used in a string:
+You can detect which decoding systems are used in a String:
 
 ~~~~~ ruby
 mixed_unix_and_mac_string = "Abcdef\rAbcdef\nAbcdef"
 
-Aef::Linebreak.encodings(mixed_unix_and_mac_string)
+mixed_unix_and_mac_string.linebreak_encodings
 #=> #<Set: {:unix, :mac}>
 ~~~~~
 
-You can also easily ensure that a string contains exactly the linebreak
+You can also easily ensure that a String contains exactly the linebreak
 encodings you expect it to contain:
 
 ~~~~~ ruby
 mixed_windows_and_mac_string = "Abcdef\r\nAbcdef\rAbcdef"
 
-Aef::Linebreak.encoding?(mixed_windows_and_mac_string, :windows)
+mixed_windows_and_mac_string.linebreak_encoding?(:windows)
 #=> false
 
-Aef::Linebreak.encoding?(mixed_windows_and_mac_string, :windows, :mac)
+mixed_windows_and_mac_string.linebreak_encoding?(:windows, :mac)
 #=> true
 ~~~~~
 
-Note that the expected linebreak systems could also be given as an array or a
-set.
+Note that the expected linebreak systems could also be given as an Array or a
+Set.
 
-Alternatively you could include Linebreak into the String class and use it in
-the following way:
+If you prefer not the use the core extensions (e.g. in bare mode) you can use
+this library in the following way: 
 
 ~~~~~ ruby
-require 'aef/linebreak/string_extension'
-
-"Abcdef\nAbcdef\nAbcdef".linebreak_encode(:mac)
+Aef::Linebreak.encode("Abcdef\nAbcdef\nAbcdef", :mac)
 #=> "Abcdef\rAbcdef\rAbcdef"
 
-"Abcdef\r\nAbcdef\nAbcdef".linebreak_encodings
+Aef::Linebreak.encodings("Abcdef\r\nAbcdef\nAbcdef")
 #=> #<Set: {:unix, :windows}>
 
-"Abcdef\nAbcdef\nAbcdef".linebreak_encoding?(:unix, :windows)
+Aef::Linebreak.encoding?("Abcdef\nAbcdef\nAbcdef", :unix, :windows)
 #=> false
 
-"Abcdef\nAbcdef\nAbcdef".linebreak_encoding?(:unix)
+Aef::Linebreak.encoding?("Abcdef\nAbcdef\nAbcdef", :unix)
 #=> true
 ~~~~~
 
-### Command-line tool
+Or you can manually extend a String to support the linebreak helper methods like
+this:
 
-The default output encoding is unix. You can also choose mac and windows.
-
-    linebreak encode --system windows unix.txt windows.txt
-
-If no target file is specified the output will be sent to STDOUT.
-
-    linebreak encode --system windows mac.txt > windows.txt
-
-You can set the default with the environment variable LINEBREAK_SYSTEM.
-
-    export LINEBREAK_SYSTEM=mac
-
-    linebreak encode windows.txt mac.txt
-
-If you do not specify an output file, output will be put to STDOUT. If you also
-do not specify an input file, input will be expected from STDIN.
-
-You can also detect the linebreak systems contained in a file in the following
-way:
-
-    linebreak encodings windows_mac.txt
-
-If you want to ensure that a file contains the exact encodings systems you
-specified, you can use the following command:
-
-    linebreak encodings --ensure unix,windows,mac unix.txt
-
-The results will be outputted. In case of a file containing other linebreak
-encoding systems there will be an exit code of 1.
-
-It is also possible to specify multiple input files or none to expect input from
-STDIN.
+~~~~~ ruby
+some_string.extend Aef::Linebreak
+~~~~~
 
 Requirements
 ------------
 
 * Ruby 1.8.7 or higher
-* user-choices for command line tool
 
 Installation
 ------------
@@ -169,9 +156,8 @@ privileges.
 
 There is a high security installation option available through rubygems. It is
 highly recommended over the normal installation, although it may be a bit less
-comfortable. To use the installation method, you will need my public key, which
-I use for cryptographic signatures on all my gems. You can find the public key
-here: http://aef.name/crypto/aef-gem.pem
+comfortable. To use the installation method, you will need my [gem signing
+public key][9], which I use for cryptographic signatures on all my gems.
 
 Add the key to your rubygems' trusted certificates by the following command:
 
@@ -183,7 +169,9 @@ following command:
     gem install linebreak -P HighSecurity
 
 Please notice that you may need other keys for dependent libraries, so you may
-have to install dependencies manually.  
+have to install dependencies manually.
+
+   [9]: http://aef.name/crypto/aef-gem.pem
 
 ### Normal
 
@@ -211,9 +199,24 @@ following command:
 
     git clone https://github.com/aef/linebreak.git
 
+The final commit before each released gem version will be marked by a tag
+named like the version with a prefixed lower-case "v", as required by Semantic
+Versioning. Every tag will be signed by my [OpenPGP public key][10] which
+enables you to verify your copy of the code cryptographically.
+
+   [10]: http://aef.name/crypto/aef-openpgp.pem
+
+Add the key to your GnuPG keyring by the following command:
+
+    gpg --import aef-openpgp.asc
+
+This command will tell you if your code is of integrity and authentic:
+
+    git tag -v [TAG NAME]
+
 Help on making this software better is always very appreciated. If you want
 your changes to be included in the official release, please clone my project
-on github.com, create a named branch to commit and push your changes in and
+on github.com, create a named branch to commit and push your changes into and
 send me a pull request afterwards.
 
 Please make sure to write tests for your changes so that I won't break them

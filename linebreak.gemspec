@@ -26,10 +26,10 @@ Gem::Specification.new do |s|
   s.email       = ['aef@raxys.net']
   s.homepage    = 'http://github.com/aef/linebreak'
   s.license     = 'ISC'
-  s.summary     = 'Easy linebreak system conversion'
+  s.summary     = 'Easy linebreak system conversion library'
   s.description = <<-DESCRIPTION
-Linebreak is a Ruby library and commandline tool for conversion of text
-between linebreak encoding formats of unix, windows or mac.
+Linebreak is a Ruby library for conversion of text between linebreak encoding
+formats of unix, windows or mac.
   DESCRIPTION
 
   s.rubyforge_project = nil

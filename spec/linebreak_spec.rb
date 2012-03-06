@@ -20,7 +20,15 @@ PERFORMANCE OF THIS SOFTWARE.
 require 'spec_helper'
 
 describe Aef::Linebreak do
-  include LinebreakSpecHelper
+  let(:unix_fixture)    { "Abcdef\nAbcdef\nAbcdef" }
+  let(:windows_fixture) { "Abcdef\r\nAbcdef\r\nAbcdef" }
+  let(:mac_fixture)     { "Abcdef\rAbcdef\rAbcdef" }
+  let(:custom_fixture)  { "AbcdeffnordAbcdeffnordAbcdef" }
+  let(:none_fixture)    { "AbcdefAbcdefAbcdef" }
+  let(:unix_windows_fixture) { unix_fixture + windows_fixture }
+  let(:windows_mac_fixture)  { windows_fixture + mac_fixture }
+  let(:mac_unix_fixture)     { mac_fixture + unix_fixture }
+  let(:unix_windows_mac_fixture) { unix_fixture + windows_fixture + mac_fixture }
 
   context 'library' do
     describe 'method "encode"' do
@@ -263,120 +271,6 @@ describe Aef::Linebreak do
         end
       end
 
-    end
-  end
-
-  context 'commandline tool' do
-    describe '"version" command' do
-      it 'should display correct version and licensing information with the version argument' do
-        `#{executable_path} version`.should eql(version_message)
-      end
-
-      it 'should display correct version and licensing information with the --version argument' do
-        `#{executable_path} --version`.should eql(version_message)
-      end
-
-      it 'should display correct version and licensing information with the -v argument' do
-        `#{executable_path} -v`.should eql(version_message)
-      end
-
-      it 'should display correct version and licensing information with the -V argument' do
-        `#{executable_path} -V`.should eql(version_message)
-      end
-    end
-
-    describe '"encode" command' do
-      it 'should use unix as default format' do
-        `#{executable_path} encode #{fixture_path('windows.txt')}`.should eql(unix_fixture)
-      end
-
-      it 'should accept -s option to specify output format' do
-        `#{executable_path} encode -s mac #{fixture_path('unix.txt')}`.should eql(mac_fixture)
-      end
-
-      it 'should also accept --system option to specify output format' do
-        `#{executable_path} encode --system windows #{fixture_path('mac.txt')}`.should eql(windows_fixture)
-      end
-
-      it 'should abort on invalid output formats' do
-        POpen4.popen4("#{executable_path} encode -s fnord #{fixture_path('mac.txt')}") do |stdout, stderr, stdin, pid|
-          stdout.read.should be_empty
-          stderr.read.should_not be_empty
-        end
-      end
-
-      it 'should accept LINEBREAK_SYSTEM environment variable to specify output format' do
-        env(:LINEBREAK_SYSTEM => 'mac') do
-          `#{executable_path} encode #{fixture_path('windows.txt')}`.should eql(mac_fixture)
-        end
-      end
-
-      it 'should use output format specified with -s even if LINEBREAK_SYSTEM environment variable is set' do
-        env(:LINEBREAK_SYSTEM => 'windows') do
-          `#{executable_path} encode -s mac #{fixture_path('unix.txt')}`.should eql(mac_fixture)
-        end
-      end
-
-      it 'should use a second argument as target file' do
-        temp_file = Tempfile.open('linebreak_spec')
-        location = Pathname(temp_file.path)
-        temp_file.close
-        location.delete
-
-        `#{executable_path} encode --system windows #{fixture_path('unix.txt')} #{location}`.should be_empty
-
-        location.read.should eql(windows_fixture)
-        location.delete
-      end
-    end
-
-    describe '"encodings" command' do
-      it "should correctly detect the linebreak encodings of a file" do
-        POpen4.popen4("#{executable_path} encodings #{fixture_path('mac.txt')}") do |stdout, stderr, stdin, pid|
-          stdout.read.should eql("#{fixture_path('mac.txt')}: mac\n")
-        end.exitstatus.should eql(0)
-      end
-
-      it "should correctly detect the linebreak encodings of multiple files" do
-        files = %w{unix_windows.txt windows_mac.txt mac_unix.txt unix_windows_mac.txt}
-        files = files.map{|file| fixture_path(file)}
-
-        POpen4.popen4("#{executable_path} encodings #{files.join(' ')}") do |stdout, stderr, stdin, pid|
-          output = stdout.read
-          output.should include("#{files[0]}: unix,windows\n")
-          output.should include("#{files[1]}: windows,mac\n")
-          output.should include("#{files[2]}: unix,mac\n")
-          output.should include("#{files[3]}: unix,windows,mac\n")
-        end.exitstatus.should eql(0)
-      end
-
-      it "should correctly ensure the linebreak encodings of a valid file" do
-        POpen4.popen4("#{executable_path} encodings --ensure unix #{fixture_path('unix.txt')}") do |stdout, stderr, stdin, pid|
-          output = stdout.read
-          output.should eql("#{fixture_path('unix.txt')}: unix\n")
-        end.exitstatus.should eql(0)
-      end
-
-      it "should correctly ensure the linebreak encodings of an invalid file" do
-        POpen4.popen4("#{executable_path} encodings --ensure mac #{fixture_path('unix_windows.txt')}") do |stdout, stderr, stdin, pid|
-          output = stdout.read
-          output.should eql("#{fixture_path('unix_windows.txt')}: unix,windows (failed)\n")
-        end.exitstatus.should eql(1)
-      end
-
-      it "should correctly ensure the linebreak encodings of multiple files" do
-        files = %w{unix_windows.txt windows_mac.txt mac_unix.txt unix_windows_mac.txt}
-        files = files.map{|file| fixture_path(file)}
-
-        POpen4.popen4("#{executable_path} encodings --ensure windows,unix #{files.join(' ')}") do |stdout, stderr, stdin, pid|
-          output = stdout.read
-          output.should include("#{files[0]}: unix,windows\n")
-          output.should_not include("#{files[0]}: unix,windows (failed)\n")
-          output.should include("#{files[1]}: windows,mac (failed)\n")
-          output.should include("#{files[2]}: unix,mac (failed)\n")
-          output.should include("#{files[3]}: unix,windows,mac (failed)\n")
-        end.exitstatus.should eql(1)
-      end
     end
   end
 end
