@@ -34,11 +34,6 @@ module Aef
   # Namespace for the linebreak library
   module Linebreak
 
-    autoload :ConversionToPathname, 'aef/linebreak/pathname_conversion'
-    autoload :EncodeCommand,        'aef/linebreak/commands/encode'
-    autoload :EncodingsCommand,     'aef/linebreak/commands/encodings'
-    autoload :VersionCommand,       'aef/linebreak/commands/version'
-  
     # Mapping table from symbol to actual linebreak sequence
     #
     # @private
