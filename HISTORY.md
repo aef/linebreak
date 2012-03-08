@@ -5,9 +5,11 @@
 
   * Changed to ISC based license
 
-* 1 minor enhancement
+* 3 minor enhancements
 
   * Slightly restructured project
+  * Extracted the command-line tool into linebreak-cli gem
+  * Documentation converted to YARD syntax
 
 1.3.1 / 2009-09-14
 ==================

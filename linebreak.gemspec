@@ -45,12 +45,10 @@ formats of unix, windows or mac.
 
   s.add_development_dependency('bundler', '~> 1.0.21')
   s.add_development_dependency('rake', '~> 0.9.2')
-  s.add_development_dependency('rspec', '~> 2.6.0')
-  s.add_development_dependency('simplecov', '~> 0.5.4')
+  s.add_development_dependency('rspec', '~> 2.8.0')
+  s.add_development_dependency('simplecov', '~> 0.6.1')
   s.add_development_dependency('pry', '~> 0.9.8')
   s.add_development_dependency('yard', '~> 0.7.5')
-  s.add_development_dependency('maruku', '~> 0.6.0')
-  s.add_development_dependency('popen4', '~> 0.1.2')
 
   s.cert_chain = "#{ENV['GEM_CERT_CHAIN']}".split(':')
   s.signing_key = ENV['GEM_SIGNING_KEY']
