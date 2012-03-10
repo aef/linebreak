@@ -21,6 +21,11 @@ require 'bundler'
 
 Bundler.setup
 
+unless defined?(Rubinius)
+  require 'simplecov'
+  SimpleCov.start
+end
+
 require 'rspec'
 require 'linebreak'
 

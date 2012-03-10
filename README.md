@@ -4,11 +4,11 @@ Linebreak
 [![Build Status](https://secure.travis-ci.org/aef/linebreak.png)](
 https://secure.travis-ci.org/aef/linebreak)
 
-* [Documentation][1]
-* [Project][2]
+* [Documentation][docs]
+* [Project][project]
 
-   [1]: http://rdoc.info/projects/aef/linebreak/
-   [2]: https://github.com/aef/linebreak/
+   [docs]:    http://rdoc.info/projects/aef/linebreak/
+   [project]: https://github.com/aef/linebreak/
 
 Description
 -----------
@@ -22,29 +22,30 @@ Earlier versions of Linebreak were called BreakVerter.
 Features / Problems
 -------------------
 
-This projects tries to conform to:
+This project tries to conform to:
 
-* [Semantic Versioning (2.0.0-rc.1)][5]
-* [Ruby Packaging Standard (0.5-draft)][6]
-* [Ruby Style Guide][7]
-* [Gem Packaging: Best Practices][8]
+* [Semantic Versioning (2.0.0-rc.1)][semver]
+* [Ruby Packaging Standard (0.5-draft)][rps]
+* [Ruby Style Guide][style]
+* [Gem Packaging: Best Practices][gem]
 
-   [5]: http://semver.org/
-   [6]: http://chneukirchen.github.com/rps/
-   [7]: https://github.com/bbatsov/ruby-style-guide
-   [8]: http://weblog.rubyonrails.org/2009/9/1/gem-packaging-best-practices
+   [semver]: http://semver.org/
+   [rps]:    http://chneukirchen.github.com/rps/
+   [style]:  https://github.com/bbatsov/ruby-style-guide
+   [gem]:    http://weblog.rubyonrails.org/2009/9/1/gem-packaging-best-practices
 
 Additional facts:
 
 * Written purely in Ruby.
+* Documented with YARD.
 * Intended to be used with Ruby 1.8.7 or higher.
 * Extends core classes. This can be disabled through bare mode.
-* Cryptographically signed gem and git tags
+* Cryptographically signed gem and git tags.
 
 Synopsis
 --------
 
-This documentation defines the public interface of the library. Don't rely
+This documentation defines the public interface of the software. Don't rely
 on elements marked as private. Those should be hidden in the documentation
 by default.
 
@@ -157,7 +158,7 @@ privileges.
 There is a high security installation option available through rubygems. It is
 highly recommended over the normal installation, although it may be a bit less
 comfortable. To use the installation method, you will need my [gem signing
-public key][9], which I use for cryptographic signatures on all my gems.
+public key][gemkey], which I use for cryptographic signatures on all my gems.
 
 Add the key to your rubygems' trusted certificates by the following command:
 
@@ -171,7 +172,7 @@ following command:
 Please notice that you may need other keys for dependent libraries, so you may
 have to install dependencies manually.
 
-   [9]: http://aef.name/crypto/aef-gem.pem
+   [gemkey]: http://aef.name/crypto/aef-gem.pem
 
 ### Normal
 
@@ -193,6 +194,15 @@ If something goes wrong you should be noticed through failing examples.
 Development
 -----------
 
+### Bugs Reports and Feature Requests
+
+Please use the [issue tracker][issues] on github.com to let me know about errors
+or ideas for improvement of this software.
+
+   [issues]: https://github.com/aef/linebreak/issues/
+
+### Source code
+
 This software is developed in the source code management system git hosted
 at github.com. You can download the most recent sourcecode through the
 following command:
@@ -201,10 +211,10 @@ following command:
 
 The final commit before each released gem version will be marked by a tag
 named like the version with a prefixed lower-case "v", as required by Semantic
-Versioning. Every tag will be signed by my [OpenPGP public key][10] which
+Versioning. Every tag will be signed by my [OpenPGP public key][openpgp] which
 enables you to verify your copy of the code cryptographically.
 
-   [10]: http://aef.name/crypto/aef-openpgp.pem
+   [openpgp]: http://aef.name/crypto/aef-openpgp.asc
 
 Add the key to your GnuPG keyring by the following command:
 
@@ -213,6 +223,8 @@ Add the key to your GnuPG keyring by the following command:
 This command will tell you if your code is of integrity and authentic:
 
     git tag -v [TAG NAME]
+
+### Contribution
 
 Help on making this software better is always very appreciated. If you want
 your changes to be included in the official release, please clone my project
