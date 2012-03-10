@@ -7,7 +7,7 @@ https://secure.travis-ci.org/aef/linebreak)
 * [Documentation][docs]
 * [Project][project]
 
-   [docs]:    http://rdoc.info/projects/aef/linebreak/
+   [docs]:    http://rdoc.info/github/aef/linebreak/
    [project]: https://github.com/aef/linebreak/
 
 Description
