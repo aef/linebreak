@@ -24,7 +24,7 @@ module Aef
     #
     # Using Semantic Versioning (2.0.0-rc.1) rules
     # @see http://semver.org/
-    VERSION = '2.0.0pre.1'.freeze
+    VERSION = '2.0.0'.freeze
     
   end
 end
