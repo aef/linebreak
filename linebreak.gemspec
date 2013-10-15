@@ -19,37 +19,36 @@ PERFORMANCE OF THIS SOFTWARE.
 
 require File.expand_path('../lib/aef/linebreak/version', __FILE__)
 
-Gem::Specification.new do |s|
-  s.name        = 'linebreak'
-  s.version     = Aef::Linebreak::VERSION.dup
-  s.authors     = ['Alexander E. Fischer']
-  s.email       = ['aef@raxys.net']
-  s.homepage    = 'http://github.com/aef/linebreak'
-  s.license     = 'ISC'
-  s.summary     = 'Easy linebreak system conversion library'
-  s.description = <<-DESCRIPTION
+Gem::Specification.new do |gem|
+  gem.name    = "linebreak"
+  gem.version = Aef::Linebreak::VERSION.dup
+  gem.authors = ["Alexander E. Fischer"]
+  gem.email   = ["aef@raxys.net"]
+  gem.description = <<-DESCRIPTION
 Linebreak is a Ruby library for conversion of text between linebreak encoding
 formats of unix, windows or mac.
   DESCRIPTION
+  gem.summary  = "Easy linebreak system conversion library"
+  gem.homepage = "https://aef.name/"
+  gem.license  = "ISC"
+  gem.has_rdoc = "yard"
+  gem.extra_rdoc_files  = ["HISTORY.md", "LICENSE.md"]
+  gem.rubyforge_project = nil
 
-  s.rubyforge_project = nil
-  s.has_rdoc          = 'yard'
-  s.extra_rdoc_files  = ['HISTORY.md', 'LICENSE.md'] 
+  gem.files         = `git ls-files`.split($\)
+  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  gem.require_paths = ["lib"]
 
-  s.files         = `git ls-files`.lines.map(&:chomp)
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.lines.map(&:chomp)
-  s.executables   = `git ls-files -- bin/*`.lines.map{|f| File.basename(f.chomp) }
-  s.require_paths = ["lib"]
+  gem.required_ruby_version = '>= 1.9.3'
 
-  s.required_ruby_version = '>= 1.8.7'
+  gem.add_development_dependency('rake')
+  gem.add_development_dependency('bundler')
+  gem.add_development_dependency('rspec', '~> 2.11.0')
+  gem.add_development_dependency('simplecov')
+  gem.add_development_dependency('pry')
+  gem.add_development_dependency('yard')
 
-  s.add_development_dependency('bundler', '~> 1.1.5')
-  s.add_development_dependency('rake', '~> 0.9.2.2')
-  s.add_development_dependency('rspec', '~> 2.11.0')
-  s.add_development_dependency('simplecov', '~> 0.6.4')
-  s.add_development_dependency('pry', '~> 0.9.10')
-  s.add_development_dependency('yard', '~> 0.8.2.1')
-
-  s.cert_chain = "#{ENV['GEM_CERT_CHAIN']}".split(':')
-  s.signing_key = ENV['GEM_SIGNING_KEY']
+  gem.cert_chain = "#{ENV['GEM_CERT_CHAIN']}".split(':')
+  gem.signing_key = ENV['GEM_SIGNING_KEY']
 end

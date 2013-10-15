@@ -1,9 +1,11 @@
 Linebreak
 =========
 
-[![Build Status](https://secure.travis-ci.org/aef/linebreak.png)](
-https://secure.travis-ci.org/aef/linebreak)
-[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/aef/linebreak)
+[![Gem Version](https://badge.fury.io/rb/linebreak.png)](http://badge.fury.io/rb/linebreak)
+[![Build Status](https://secure.travis-ci.org/aef/linebreak.png)](https://secure.travis-ci.org/aef/linebreak)
+[![Dependency Status](https://gemnasium.com/aef/linebreak.png)](https://gemnasium.com/aef/linebreak)
+[![Code Climate](https://codeclimate.com/github/aef/linebreak.png)](https://codeclimate.com/github/aef/linebreak)
+[![Coverage Status](https://coveralls.io/repos/aef/linebreak/badge.png?branch=master)](https://coveralls.io/r/aef/linebreak)
 
 * [Documentation][docs]
 * [Project][project]
@@ -25,7 +27,7 @@ Features / Problems
 
 This project tries to conform to:
 
-* [Semantic Versioning (2.0.0-rc.1)][semver]
+* [Semantic Versioning (2.0.0)][semver]
 * [Ruby Packaging Standard (0.5-draft)][rps]
 * [Ruby Style Guide][style]
 * [Gem Packaging: Best Practices][gem]
@@ -39,7 +41,8 @@ Additional facts:
 
 * Written purely in Ruby.
 * Documented with YARD.
-* Intended to be used with Ruby 1.8.7 or higher.
+* Automatically testable through RSpec.
+* Intended to be used with Ruby 1.9.3 or higher.
 * Extends core classes. This can be disabled through bare mode.
 * Cryptographically signed gem and git tags.
 
@@ -146,7 +149,7 @@ some_string.extend Aef::Linebreak
 Requirements
 ------------
 
-* Ruby 1.8.7 or higher
+* Ruby 1.9.3 or higher
 
 Installation
 ------------
@@ -165,7 +168,7 @@ Add the key to your rubygems' trusted certificates by the following command:
 
     gem cert --add aef-gem.pem
 
-Now you can install the gem while automatically verifying it's signature by the
+Now you can install the gem while automatically verifying its signature by the
 following command:
 
     gem install linebreak -P HighSecurity
@@ -207,24 +210,28 @@ or ideas for improvement of this software.
 This software is developed in the source code management system Git. There are
 several synchronized mirror repositories available:
 
-* GitHub
+* GitHub (located in California, USA)
     
     URL: https://github.com/aef/linebreak.git
 
-* Gitorious
+* Gitorious (located in Norway)
     
     URL: https://git.gitorious.org/linebreak/linebreak.git
 
-* BitBucket
+* BitBucket (located in Colorado, USA)
     
     URL: https://bitbucket.org/alefi/linebreak.git
+
+* Pikacode (located in France)
+
+    URL: https://pikacode.com/aef/linebreak.git
 
 You can get the latest source code with the following command, while
 exchanging the placeholder for one of the mirror URLs:
 
     git clone MIRROR_URL
 
-#### Tags
+#### Tags and cryptographic verification
 
 The final commit before each released gem version will be marked by a tag
 named like the version with a prefixed lower-case "v", as required by Semantic
@@ -241,16 +248,30 @@ This command will tell you if your code is of integrity and authentic:
 
     git tag -v [TAG NAME]
 
+#### Building gems
+
+To package your state of the source code into a gem package use the following
+command:
+
+    rake build
+
+The gem will be generated according to the .gemspec file in the project root
+directory and will be placed into the pkg/ directory.
+
 ### Contribution
 
 Help on making this software better is always very appreciated. If you want
-your changes to be included in the official release, please clone my project
-on github.com, create a named branch to commit and push your changes into and
-send me a pull request afterwards.
+your changes to be included in the official release, please clone the project
+on github.com, create a named branch to commit, push your changes into it and
+send a pull request afterwards.
 
-Please make sure to write tests for your changes so that I won't break them
-when changing other things on the library. Also notice that I can't promise
-to include your changes before reviewing them.
+Please make sure to write tests for your changes so that no one else will break
+them when changing other things. Also notice that an inclusion of your changes
+cannot be guaranteed before reviewing them.
+
+The following people were involved in development:
+
+- Alexander E. Fischer
 
 License
 -------
