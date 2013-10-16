@@ -44,7 +44,7 @@ formats of unix, windows or mac.
 
   gem.add_development_dependency('rake')
   gem.add_development_dependency('bundler')
-  gem.add_development_dependency('rspec', '~> 2.11.0')
+  gem.add_development_dependency('rspec', '~> 2.14.1')
   gem.add_development_dependency('simplecov')
   gem.add_development_dependency('pry')
   gem.add_development_dependency('yard')
