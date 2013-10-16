@@ -19,5 +19,5 @@ PERFORMANCE OF THIS SOFTWARE.
 
 source 'http://rubygems.org'
 
-# Specify your gem's dependencies in weekling.gemspec
+# Gem dependencies are specified in the .gemspec file
 gemspec
