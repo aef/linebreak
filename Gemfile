@@ -21,3 +21,6 @@ source 'http://rubygems.org'
 
 # Gem dependencies are specified in the .gemspec file
 gemspec
+
+gem 'coveralls', require: false
+
