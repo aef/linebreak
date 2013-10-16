@@ -1,7 +1,7 @@
 Linebreak
 =========
 
-[![Gem Version](https://badge.fury.io/rb/linebreak.png)](http://badge.fury.io/rb/linebreak)
+[![Gem Version](https://badge.fury.io/rb/linebreak.png)](https://badge.fury.io/rb/linebreak)
 [![Build Status](https://secure.travis-ci.org/aef/linebreak.png)](https://secure.travis-ci.org/aef/linebreak)
 [![Dependency Status](https://gemnasium.com/aef/linebreak.png)](https://gemnasium.com/aef/linebreak)
 [![Code Climate](https://codeclimate.com/github/aef/linebreak.png)](https://codeclimate.com/github/aef/linebreak)
@@ -17,7 +17,7 @@ Description
 -----------
 
 Linebreak is a Ruby library for conversion of text between linebreak encoding
-formats of unix, windows or mac.
+formats of Unix, Windows or Mac.
 
 A command-line tool is available as separate gem named linebreak-cli.
 Earlier versions of Linebreak were called BreakVerter.
@@ -207,6 +207,8 @@ or ideas for improvement of this software.
 
 ### Source code
 
+#### Distribution
+
 This software is developed in the source code management system Git. There are
 several synchronized mirror repositories available:
 
@@ -276,7 +278,7 @@ The following people were involved in development:
 License
 -------
 
-Copyright Alexander E. Fischer <aef@raxys.net>, 2009-2012
+Copyright Alexander E. Fischer <aef@godobject.net>, 2009-2013
 
 This file is part of Linebreak.
 

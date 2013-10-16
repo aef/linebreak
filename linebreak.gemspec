@@ -1,6 +1,6 @@
 # encoding: UTF-8
 =begin
-Copyright Alexander E. Fischer <aef@raxys.net>, 2009-2012
+Copyright Alexander E. Fischer <aef@godobject.net>, 2009-2013
 
 This file is part of Linebreak.
 
@@ -23,10 +23,10 @@ Gem::Specification.new do |gem|
   gem.name    = "linebreak"
   gem.version = Aef::Linebreak::VERSION.dup
   gem.authors = ["Alexander E. Fischer"]
-  gem.email   = ["aef@raxys.net"]
+  gem.email   = ["aef@godobject.net"]
   gem.description = <<-DESCRIPTION
 Linebreak is a Ruby library for conversion of text between linebreak encoding
-formats of unix, windows or mac.
+formats of Unix, Windows or Mac.
   DESCRIPTION
   gem.summary  = "Easy linebreak system conversion library"
   gem.homepage = "https://aef.name/"
