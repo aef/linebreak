@@ -1,3 +1,16 @@
+2.1.0 / 2013-10-17
+==================
+
+* 5 minor enhancements
+
+  * Updated documentation
+  * Updated gemspec
+  * Updated dependencies
+  * Added project to Gemnasium
+  * Added project to Coveralls
+
+* Ruby versions below 1.9.3 are not supported anymore
+
 2.0.1 / 2012-10-02
 ==================
 
